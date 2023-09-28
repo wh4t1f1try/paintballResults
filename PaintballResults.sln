@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaintballResults.Api", "Pai
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{D6E88DF4-C2DE-4927-A6D0-41EAA8C34A97}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{B8DC2502-59BA-4BD1-B05F-C5086E49447A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Paintball", "Paintball\Paintball.csproj", "{09DBC1EC-B463-4F0E-99BD-42BBF6E95321}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paintball.Abstractions", "Paintball.Abstractions\Paintball.Abstractions.csproj", "{4A00A757-C230-4FB3-8239-B769F405BBCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +23,22 @@ Global
 		{51C0B37B-3331-4720-8A9C-0E415C3C6919}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51C0B37B-3331-4720-8A9C-0E415C3C6919}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51C0B37B-3331-4720-8A9C-0E415C3C6919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09DBC1EC-B463-4F0E-99BD-42BBF6E95321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09DBC1EC-B463-4F0E-99BD-42BBF6E95321}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09DBC1EC-B463-4F0E-99BD-42BBF6E95321}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09DBC1EC-B463-4F0E-99BD-42BBF6E95321}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A00A757-C230-4FB3-8239-B769F405BBCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A00A757-C230-4FB3-8239-B769F405BBCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A00A757-C230-4FB3-8239-B769F405BBCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A00A757-C230-4FB3-8239-B769F405BBCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{51C0B37B-3331-4720-8A9C-0E415C3C6919} = {D6E88DF4-C2DE-4927-A6D0-41EAA8C34A97}
+		{09DBC1EC-B463-4F0E-99BD-42BBF6E95321} = {B8DC2502-59BA-4BD1-B05F-C5086E49447A}
+		{4A00A757-C230-4FB3-8239-B769F405BBCA} = {B8DC2502-59BA-4BD1-B05F-C5086E49447A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FDA953E-1B3E-4436-AE0C-D4964A1478C3}
