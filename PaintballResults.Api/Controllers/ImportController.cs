@@ -2,24 +2,25 @@
 using Paintball.Abstractions.Services;
 
 
-namespace PaintballResults.Api.Controllers;
-
-[Route("api/games")]
-[ApiController]
-public class ImportController : ControllerBase
-
+namespace PaintballResults.Api.Controllers
 {
-    public IImportService ImportService { get; set; }
+    [Route("api/games")]
+    [ApiController]
+    public class ImportController : ControllerBase
 
-    public ImportController(IImportService importService)
     {
-        ImportService = importService;
-    }
+        private IImportService ImportService { get; }
 
-    [HttpPost("import")]
-    public async Task<IActionResult> ImportGameResultCsv(IFormFile file)
-    {
-        ImportService.ImportGameResults(file.OpenReadStream());
-        return Ok("Import erfolgreich.");
+        public ImportController(IImportService importService)
+        {
+            ImportService = importService;
+        }
+
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportGameResultCsv(IFormFile file)
+        {
+            ImportService.ImportGameResults(file.OpenReadStream());
+            return Ok("Import erfolgreich.");
+        }
     }
 }

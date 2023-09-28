@@ -3,29 +3,28 @@ using Paintball.Abstractions.Constants;
 using Paintball.Abstractions.Converters;
 using Paintball.Abstractions.Exceptions;
 
-namespace Paintball.Converters
+namespace Paintball.Converters;
+
+public class StreamToStringConverter : IStreamToStringConverter
 {
-    public class StreamToStringConverter : IStreamToStringConverter
+    public IList<string> Convert(Stream? stream)
     {
-        public IList<string> Convert(Stream? stream)
-        {
-            IList<string> dataRecords = new List<string>();
+        IList<string> dataRecords = new List<string>();
 
-            if (IsInvalid(stream))
-            {
-                throw new StreamIsNullOrEmptyException(ExceptionMessages.StreamIsNullOrEmpty);
-            }
+        if (IsInvalid(stream)) throw new StreamIsNullOrEmptyException(ExceptionMessages.StreamIsNullOrEmpty);
 
-            using StreamReader streamReader = new(stream, Encoding.UTF7);
+        //Encoding.UTF7 deprecated -> need for diacritics
+#pragma warning disable SYSLIB0001
+        using StreamReader streamReader = new(stream!, Encoding.UTF7);
+#pragma warning restore SYSLIB0001
 
-            while (!streamReader.EndOfStream)
-            {
-                dataRecords.Add(streamReader.ReadLine()!);
-            }
+        while (!streamReader.EndOfStream) dataRecords.Add(streamReader.ReadLine()!);
 
-            return dataRecords;
-        }
+        return dataRecords;
+    }
 
-        private bool IsInvalid(Stream? stream) => stream == null || stream.Length <= 0;
+    private bool IsInvalid(Stream? stream)
+    {
+        return stream == null || stream.Length <= 0;
     }
 }

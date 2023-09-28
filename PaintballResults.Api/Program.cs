@@ -16,12 +16,7 @@ using PaintballResults.Api.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var painballResultsSwaggerEndpoint = "/paintballresults-api/v1/paintballresults-api-documentation.json";
-var paintballResultsRouteprefix = "paintballresults-api";
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ICsvDataStringValidator, CsvDataStringValidator>();
@@ -50,17 +45,11 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 app.UseStaticFiles();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
 
     app.UseSwaggerUI(
-        //    options =>
-        //{
-        //    options.SwaggerEndpoint(painballResultsSwaggerEndpoint, "version from .json");
-        //    options.RoutePrefix = paintballResultsRouteprefix;
-        //}
     );
 }
 

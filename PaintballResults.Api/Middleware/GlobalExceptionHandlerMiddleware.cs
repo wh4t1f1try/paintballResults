@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Paintball.Abstractions.Enums;
 using Paintball.Abstractions.Exceptions;
 using ErrorCodes = Paintball.Abstractions.Enums.ErrorCodes;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -76,7 +75,7 @@ namespace PaintballResults.Api.Middleware
             else if (exceptionType == typeof(StreamIsNullOrEmptyException))
             {
                 message = e.Message;
-                errorCodes = ErrorCodes.OmegaFail;
+                errorCodes = ErrorCodes.StreamFailure;
                 statusCode = StatusCodes.Status409Conflict;
             }
             else if (exceptionType == typeof(InvalidDataStringException))
@@ -88,9 +87,8 @@ namespace PaintballResults.Api.Middleware
 
             else
             {
-                //todo: Umbenennen
-                message = "Omegafail";
-                errorCodes = ErrorCodes.OmegaFail;
+                message = "Total Failure";
+                errorCodes = ErrorCodes.TotalFailure;
             }
 
             ProblemDetails exceptionResult = new()
