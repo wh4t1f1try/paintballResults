@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaintballResults.Api", "PaintballResults.Api\PaintballResults.Api.csproj", "{51C0B37B-3331-4720-8A9C-0E415C3C6919}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{D6E88DF4-C2DE-4927-A6D0-41EAA8C34A97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{51C0B37B-3331-4720-8A9C-0E415C3C6919} = {D6E88DF4-C2DE-4927-A6D0-41EAA8C34A97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FDA953E-1B3E-4436-AE0C-D4964A1478C3}
