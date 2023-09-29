@@ -8,9 +8,9 @@ public class GameResult
 
     public int Gameday { get; set; }
 
-    [Required] public string TeamOne { get; set; }
+    [Required] public string TeamOne { get; set; } = null!;
 
-    [Required] public string TeamTwo { get; set; }
+    [Required] public string TeamTwo { get; set; } = null!;
 
     public int TeamOneMatchPoints { get; set; }
 
