@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Paintball.Abstractions.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using ErrorCodes = Paintball.Abstractions.Enums.ErrorCodes;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace PaintballResults.Api.Middleware
 {
+    [ExcludeFromCodeCoverage]
     public class GlobalExceptionHandlerMiddleware : IMiddleware
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)

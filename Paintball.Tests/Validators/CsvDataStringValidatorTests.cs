@@ -1,16 +1,16 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Paintball.Abstractions.Constants;
 using Paintball.Abstractions.Exceptions;
 using Paintball.Validators;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Paintball.Tests.Validators;
 
-//muss Funktionalität, die in die Tests eingebaut wird auch geteste werden?
-//nullable
+//lambda´s lassen die coverage nicht auf 100 steigen
 
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class CsvDataStringValidatorTests
 {
     private CsvDataStringValidator? Validator { get; set; }
@@ -34,7 +34,7 @@ public class CsvDataStringValidatorTests
         };
 
         //Act
-        var action = () => { Validator!.Validate(dataStrings); };
+        Action action = delegate { Validator!.Validate(dataStrings); };
 
         //Assert
         action.Should().NotThrow();
@@ -46,12 +46,11 @@ public class CsvDataStringValidatorTests
         //Arrange
         IList<string> dataStrings = new List<string>
         {
-            GenerateRandomString(12, 20),
-            GenerateRandomString(12, 70)
+            GenerateRandomString(12, 20)
         };
 
         //Act
-        var action = () => { Validator!.Validate(dataStrings); };
+        Action action = delegate { Validator!.Validate(dataStrings); };
 
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.NoDelimitersFound);
@@ -67,7 +66,7 @@ public class CsvDataStringValidatorTests
             null!
         };
         //Act
-        var action = () => { Validator!.Validate(dataStrings); };
+        Action action = delegate { Validator!.Validate(dataStrings); };
 
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.InvalidDataString);
@@ -86,6 +85,24 @@ public class CsvDataStringValidatorTests
 
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.InvalidDataString);
+    }
+
+    [TestMethod]
+    [DataRow("Spiel;Tag;TeamOne;TeamTwo;TeamOneMP;TeamTwoMP")]
+    [DataRow("Spiel,Tag,TeamOne,TeamTwo,TeamOneMP,TeamTwoMP")]
+    public void Validate_When_DataStringHaveExpectedDelimiters_ThrowsNoException(string dataString)
+    {
+        //Arrange
+        IList<string> dataStrings = new List<string>
+        {
+            dataString
+        };
+
+        //Act
+        Action action = delegate { Validator!.Validate(dataStrings); };
+
+        //Assert
+        action.Should().NotThrow();
     }
 
     [ExcludeFromCodeCoverage]

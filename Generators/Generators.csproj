@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Paintball.Abstractions\Paintball.Abstractions.csproj" />
-		<ProjectReference Include="..\Paintball.Database.Abstractions\Paintball.Database.Abstractions.csproj" />
+	  <ProjectReference Include="..\Paintball.Abstractions\Paintball.Abstractions.csproj" />
+	  <ProjectReference Include="..\Paintball.Database.Abstractions\Paintball.Database.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

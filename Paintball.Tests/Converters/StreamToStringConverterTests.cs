@@ -1,7 +1,7 @@
-﻿using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Paintball.Abstractions.Exceptions;
 using Paintball.Converters;
+using System.Text;
 
 namespace Paintball.Tests.Converters;
 

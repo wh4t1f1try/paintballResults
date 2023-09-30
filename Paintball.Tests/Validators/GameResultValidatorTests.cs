@@ -261,6 +261,45 @@ public class GameResultValidatorTests
         action.Should().NotThrow();
     }
 
+    [TestMethod]
+    public void Validate_When_TeamTwoIsEmpty_ThrowsInvalidGameResultExceptionWithCorrectMessage()
+    {
+        // Arrange
+        var gameResult = new GameResult
+        {
+            Id = 1,
+            Gameday = 1,
+            TeamOne = "validTeamOne",
+            TeamTwo = string.Empty,
+            TeamOneMatchPoints = 5,
+            TeamTwoMatchPoints = 0
+        };
+
+        //Action & Assert
+        Validator.Invoking(v => v.Validate(gameResult))
+            .Should().Throw<InvalidGameResultException>().WithMessage(ExceptionMessages.TeamNotValid);
+    }
+
+    [TestMethod]
+    public void Validate_When_InvalidTeamTwoMatchPoints_ThrowsInvaldiGameResultExceptionWithCorretMessage()
+    {
+        // Arrange
+        var invalidMatchPoints = 11;
+        var gameResult = new GameResult
+        {
+            Id = 1,
+            Gameday = 1,
+            TeamOne = "validTeamOne",
+            TeamTwo = "validTeamTwo",
+            TeamOneMatchPoints = 5,
+            TeamTwoMatchPoints = invalidMatchPoints
+        };
+
+        //Action & Assert
+        Validator.Invoking(v => v.Validate(gameResult))
+            .Should().Throw<InvalidGameResultException>().WithMessage(ExceptionMessages.MatchPointsNotValid);
+    }
+
 
     private GameResult CreateValidGameResult()
     {

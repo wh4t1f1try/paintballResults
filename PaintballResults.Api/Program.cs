@@ -1,6 +1,4 @@
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Paintball.Abstractions.Converters;
 using Paintball.Abstractions.Mappers;
 using Paintball.Abstractions.Services;
@@ -13,6 +11,7 @@ using Paintball.Mappers;
 using Paintball.Services;
 using Paintball.Validators;
 using PaintballResults.Api.Middleware;
+using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
