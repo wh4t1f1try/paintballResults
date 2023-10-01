@@ -32,6 +32,7 @@ namespace Paintball.Mappers
                 TeamOneMatchPoints = ParseStringToExpectedValue(dataRecord[4]),
                 TeamTwoMatchPoints = ParseStringToExpectedValue(dataRecord[5])
             };
+        
             return gameResult;
         }
 
