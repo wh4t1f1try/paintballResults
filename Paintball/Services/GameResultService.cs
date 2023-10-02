@@ -4,6 +4,7 @@ using Paintball.Abstractions.Exceptions;
 using Paintball.Abstractions.Services;
 using Paintball.Database.Abstractions.Entities;
 using Paintball.Database.Abstractions.Repositories;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Paintball.Services
 {
@@ -51,6 +52,7 @@ namespace Paintball.Services
             return gameResults;
         }
 
+        [ExcludeFromCodeCoverage]
         public void Delete() => GameResultRepository.RemoveAllGameResults();
     }
 }
