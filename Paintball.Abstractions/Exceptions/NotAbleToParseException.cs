@@ -2,7 +2,8 @@
 {
     public class NotAbleToParseException : Exception
     {
-        public NotAbleToParseException(string? message) : base(message)
+        public NotAbleToParseException(string? message)
+            : base(message)
         {
         }
     }

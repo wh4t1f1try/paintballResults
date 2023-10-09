@@ -1,12 +1,12 @@
-﻿using Paintball.Abstractions.Constants;
+﻿namespace Paintball.Validators;
+
+using Paintball.Abstractions.Constants;
 using Paintball.Abstractions.Exceptions;
 using Paintball.Abstractions.Validators;
 
-namespace Paintball.Validators;
-
 public class DataRecordValidator : IDataRecordValidator
 {
-    private readonly IList<string> _headerRecord = new List<string>()
+    private readonly IList<string> expectedHeaderRecord = new List<string>
         { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" };
 
 
@@ -14,32 +14,39 @@ public class DataRecordValidator : IDataRecordValidator
     {
         Queue<string[]> stringQ = new(dataRecords);
 
-        ValidateHeader(stringQ.Dequeue());
+        this.ValidateHeader(stringQ.Dequeue());
 
-        foreach (var dataRecord in dataRecords) ValidateRecord(dataRecord);
+        foreach (string[] dataRecord in dataRecords)
+        {
+            this.ValidateRecord(dataRecord);
+        }
     }
 
 
     private void ValidateHeader(string[] header)
     {
-        if (!HeaderIsEqual(header))
+        if (!this.HeaderIsEqual(header))
+        {
             throw new InvalidRecordException(ExceptionMessages.InvalidHeader);
+        }
     }
 
     private void ValidateRecord(string[] record)
     {
-        if (!RecordIsValid(record))
+        if (!this.RecordIsValid(record))
+        {
             throw new InvalidRecordException(ExceptionMessages.InvalidRecord);
+        }
     }
 
 
     private bool RecordIsValid(string[] record)
     {
-        return record.Length == _headerRecord.Count && !record.Any(string.IsNullOrWhiteSpace);
+        return record.Length == this.expectedHeaderRecord.Count && !record.Any(string.IsNullOrWhiteSpace);
     }
 
     private bool HeaderIsEqual(IList<string> header)
     {
-        return header.SequenceEqual(_headerRecord);
+        return header.SequenceEqual(this.expectedHeaderRecord);
     }
 }

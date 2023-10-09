@@ -2,7 +2,8 @@
 {
     public class InvalidRecordException : Exception
     {
-        public InvalidRecordException(string? message) : base(message)
+        public InvalidRecordException(string? message)
+            : base(message)
         {
         }
     }

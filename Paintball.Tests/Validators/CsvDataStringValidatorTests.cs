@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
+﻿namespace Paintball.Tests.Validators;
+
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using FluentAssertions;
 using Paintball.Abstractions.Constants;
 using Paintball.Abstractions.Exceptions;
 using Paintball.Validators;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-
-namespace Paintball.Tests.Validators;
 
 //lambda´s lassen die coverage nicht auf 100 steigen
 
@@ -13,13 +13,10 @@ namespace Paintball.Tests.Validators;
 [ExcludeFromCodeCoverage]
 public class CsvDataStringValidatorTests
 {
-    private CsvDataStringValidator? Validator { get; set; }
-
-
     [TestInitialize]
     public void Setup()
     {
-        Validator = new CsvDataStringValidator();
+        this.Validator = new CsvDataStringValidator();
     }
 
 
@@ -34,7 +31,7 @@ public class CsvDataStringValidatorTests
         };
 
         //Act
-        Action action = delegate { Validator!.Validate(dataStrings); };
+        Action action = delegate { this.Validator!.Validate(dataStrings); };
 
         //Assert
         action.Should().NotThrow();
@@ -46,11 +43,11 @@ public class CsvDataStringValidatorTests
         //Arrange
         IList<string> dataStrings = new List<string>
         {
-            GenerateRandomString(12, 20)
+            this.GenerateRandomString(12, 20)
         };
 
         //Act
-        Action action = delegate { Validator!.Validate(dataStrings); };
+        Action action = delegate { this.Validator!.Validate(dataStrings); };
 
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.NoDelimitersFound);
@@ -66,7 +63,7 @@ public class CsvDataStringValidatorTests
             null!
         };
         //Act
-        Action action = delegate { Validator!.Validate(dataStrings); };
+        Action action = delegate { this.Validator!.Validate(dataStrings); };
 
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.InvalidDataString);
@@ -78,10 +75,10 @@ public class CsvDataStringValidatorTests
         //Arrange
         IList<string> dataStrings = new List<string>
         {
-            GenerateRandomString(5, 10)
+            this.GenerateRandomString(5, 10)
         };
         //Act
-        Action action = delegate { Validator!.Validate(dataStrings); };
+        Action action = delegate { this.Validator!.Validate(dataStrings); };
 
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.InvalidDataString);
@@ -99,7 +96,7 @@ public class CsvDataStringValidatorTests
         };
 
         //Act
-        Action action = delegate { Validator!.Validate(dataStrings); };
+        Action action = delegate { this.Validator!.Validate(dataStrings); };
 
         //Assert
         action.Should().NotThrow();
@@ -108,18 +105,26 @@ public class CsvDataStringValidatorTests
     [ExcludeFromCodeCoverage]
     private string GenerateRandomString(int start, int end)
     {
-        if (start < 0 || end < 0 || start > end) throw new InvalidArgumentException(ExceptionMessages.InvalidArgument);
+        if (start < 0 || end < 0 || start > end)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidArgument);
+        }
 
-        var random = new Random();
+        Random random = new Random();
         StringBuilder randomString = new();
 
-        var randomLength = random.Next(start, end);
+        int randomLength = random.Next(start, end);
 
-        var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÜÖÄüöäß";
+        string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÜÖÄüöäß";
 
 
-        for (var i = 0; i < randomLength; i++) randomString.Append(letters[random.Next(letters.Length)]);
+        for (int i = 0; i < randomLength; i++)
+        {
+            randomString.Append(letters[random.Next(letters.Length)]);
+        }
 
         return randomString.ToString();
     }
+
+    private CsvDataStringValidator? Validator { get; set; }
 }

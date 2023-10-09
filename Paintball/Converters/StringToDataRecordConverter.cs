@@ -1,18 +1,18 @@
-﻿using Paintball.Abstractions.Converters;
-
-namespace Paintball.Converters
+﻿namespace Paintball.Converters
 {
+    using Paintball.Abstractions.Converters;
+
     public class StringToDataRecordConverter : IStringToDataRecordConverter
     {
-        private static readonly char[] Delimiters = { ',', ';' };
+        private static readonly char[] delimiters = { ',', ';' };
 
         public IList<string[]> Convert(IList<string> dataStrings)
         {
             IList<string[]> dataRecords = new List<string[]>();
 
-            foreach (var dataString in dataStrings)
+            foreach (string dataString in dataStrings)
             {
-                dataRecords.Add(dataString.Split(Delimiters));
+                dataRecords.Add(dataString.Split(delimiters));
             }
 
             return dataRecords;

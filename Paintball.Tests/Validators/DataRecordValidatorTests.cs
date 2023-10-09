@@ -1,26 +1,20 @@
-﻿using FluentAssertions;
-using Generators;
+﻿namespace Paintball.Tests.Validators;
+
+using FluentAssertions;
 using Paintball.Abstractions.Constants;
 using Paintball.Abstractions.Exceptions;
 using Paintball.Validators;
 
-namespace Paintball.Tests.Validators;
-
 [TestClass]
 public class DataRecordValidatorTests
 {
-    public DataRecordValidator DataRecordValidator { get; set; }
-    public TestRecordsGenerator TestRecordsGenerator { get; set; }
-
-
     [TestInitialize]
     public void Setup()
     {
-        DataRecordValidator = new DataRecordValidator();
-        TestRecordsGenerator = new TestRecordsGenerator();
+        this.DataRecordValidator = new DataRecordValidator();
     }
 
-    //quest: Unterschiedliche Datensätze, immer neue IList -> effektiv?
+
     [TestMethod]
     public void Validate_When_DataRecordsAreValid_ThrowsNoException()
     {
@@ -32,7 +26,7 @@ public class DataRecordValidatorTests
         };
 
         //Act
-        Action action = delegate { DataRecordValidator.Validate(validDataRecord); };
+        Action action = delegate { this.DataRecordValidator.Validate(validDataRecord); };
 
         //Assert
         action.Should().NotThrow();
@@ -48,7 +42,7 @@ public class DataRecordValidatorTests
             new[] { "1", "1", "Wanderers Bremen", "Lucky Bastards", "1", "4" }
         };
         //Act
-        Action action = delegate { DataRecordValidator.Validate(invalidDataRecord); };
+        Action action = delegate { this.DataRecordValidator.Validate(invalidDataRecord); };
 
         //Assert 
         action.Should().Throw<InvalidRecordException>().WithMessage(ExceptionMessages.InvalidHeader);
@@ -64,7 +58,7 @@ public class DataRecordValidatorTests
             new[] { "1", "1", "Lucky Bastards", "1", "4" }
         };
         //Act
-        Action action = delegate { DataRecordValidator.Validate(invalidDataRecord); };
+        Action action = delegate { this.DataRecordValidator.Validate(invalidDataRecord); };
 
         //Assert
         action.Should().Throw<InvalidRecordException>().WithMessage(ExceptionMessages.InvalidRecord);
@@ -80,7 +74,7 @@ public class DataRecordValidatorTests
             new[] { "1", "1", "Lucky Bastards", " ", "1", "4" }
         };
         //Act
-        Action action = delegate { DataRecordValidator.Validate(invalidDataRecord); };
+        Action action = delegate { this.DataRecordValidator.Validate(invalidDataRecord); };
 
         //Assert
         action.Should().Throw<InvalidRecordException>().WithMessage(ExceptionMessages.InvalidRecord);
@@ -96,9 +90,11 @@ public class DataRecordValidatorTests
             new[] { "1", "1", "Lucky Bastards", string.Empty, "1", "4" }
         };
         //Act
-        Action action = delegate { DataRecordValidator.Validate(invalidDataRecord); };
+        Action action = delegate { this.DataRecordValidator.Validate(invalidDataRecord); };
 
         //Assert
         action.Should().Throw<InvalidRecordException>().WithMessage(ExceptionMessages.InvalidRecord);
     }
+
+    public DataRecordValidator DataRecordValidator { get; set; } = null!;
 }

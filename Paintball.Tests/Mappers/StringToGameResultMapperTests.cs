@@ -1,21 +1,18 @@
-﻿using FluentAssertions;
-using Paintball.Abstractions.Constants;
-using Paintball.Abstractions.Exceptions;
-using Paintball.Database.Abstractions.Entities;
-using Paintball.Mappers;
-using System.Diagnostics.CodeAnalysis;
+﻿namespace PaintballResults.Api.Tests.Domain.Paintball.Tests.Mappers;
 
-namespace PaintballResults.Api.Tests.Domain.Paintball.Tests.Mappers;
+using FluentAssertions;
+using global::Paintball.Abstractions.Constants;
+using global::Paintball.Abstractions.Exceptions;
+using global::Paintball.Database.Abstractions.Entities;
+using global::Paintball.Mappers;
 
 [TestClass]
 public class StringToGameResultMapperTests
 {
-    public required StringToGameResultMapper Mapper { get; set; }
-
     [TestInitialize]
     public void Setup()
     {
-        Mapper = new StringToGameResultMapper();
+        this.Mapper = new StringToGameResultMapper();
     }
 
     [TestMethod]
@@ -39,14 +36,13 @@ public class StringToGameResultMapperTests
         gameResult.TeamOneMatchPoints.Should().Be(1);
         gameResult.TeamTwoMatchPoints.Should().Be(4);
 
-        Mapper.Invoking(y => y.MapGameResult(validDataRecord))
+        this.Mapper.Invoking(y => y.MapGameResult(validDataRecord))
             .Should().NotThrow();
     }
 
     [TestMethod]
     public void MapGameResult_ValidData_ReturnGameResultCollection_NotThrwosException()
     {
-
         IList<string[]> validDataRecords = new List<string[]>();
 
         string[] dataRecord =
@@ -56,10 +52,10 @@ public class StringToGameResultMapperTests
 
         validDataRecords.Add(dataRecord);
 
-        var gameResults = Mapper.MapGameResult(validDataRecords);
+        IList<GameResult> gameResults = this.Mapper.MapGameResult(validDataRecords);
 
         gameResults.Should().NotBeEmpty()
-        .And.HaveCount(1);
+            .And.HaveCount(1);
 
         gameResults[0].Id.Should().Be(1);
         gameResults[0].Id.Should().Be(1);
@@ -69,21 +65,23 @@ public class StringToGameResultMapperTests
         gameResults[0].TeamOneMatchPoints.Should().Be(1);
         gameResults[0].TeamTwoMatchPoints.Should().Be(4);
 
-        Mapper.Invoking(m => m.MapGameResult(validDataRecords))
+        this.Mapper.Invoking(m => m.MapGameResult(validDataRecords))
             .Should().NotThrow();
     }
+
     [TestMethod]
     public void MapGameResult_InvalidData_ThrowsNotAbleToParseExceptionWithCorrectMessage()
     {
-
         string[] dataRecord =
         {
             "a", "1", "Wanderers Bremen", "Lucky Bastards", "0", "4"
         };
 
 
-        Mapper.Invoking(m => m.MapGameResult(dataRecord))
-           .Should().Throw<NotAbleToParseException>()
-           .WithMessage(ExceptionMessages.ParseError);
+        this.Mapper.Invoking(m => m.MapGameResult(dataRecord))
+            .Should().Throw<NotAbleToParseException>()
+            .WithMessage(ExceptionMessages.ParseError);
     }
+
+    public required StringToGameResultMapper Mapper { get; set; }
 }

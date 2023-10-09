@@ -2,7 +2,8 @@
 {
     public class GameResultNotFoundException : Exception
     {
-        public GameResultNotFoundException(string? message) : base(message)
+        public GameResultNotFoundException(string? message)
+            : base(message)
         {
         }
     }

@@ -1,9 +1,8 @@
-﻿using Paintball.Abstractions.Constants;
+﻿namespace Paintball.Validators;
+
+using Paintball.Abstractions.Constants;
 using Paintball.Abstractions.Exceptions;
 using Paintball.Abstractions.Validators;
-
-
-namespace Paintball.Validators;
 
 public class CsvDataStringValidator : ICsvDataStringValidator
 
@@ -14,13 +13,17 @@ public class CsvDataStringValidator : ICsvDataStringValidator
 
     public void Validate(IList<string> dataStrings)
     {
-        foreach (var dataString in dataStrings)
+        foreach (string? dataString in dataStrings)
         {
             if (dataString == null || dataString.Length < ValidDataStringLength)
+            {
                 throw new InvalidDataStringException(ExceptionMessages.InvalidDataString);
+            }
 
             if (!ContainsDelimiters(dataString))
+            {
                 throw new InvalidDataStringException(ExceptionMessages.NoDelimitersFound);
+            }
         }
     }
 

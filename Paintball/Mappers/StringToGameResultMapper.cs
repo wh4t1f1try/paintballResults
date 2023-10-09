@@ -1,11 +1,10 @@
-﻿using Paintball.Abstractions.Constants;
-using Paintball.Abstractions.Exceptions;
-using Paintball.Abstractions.Mappers;
-using Paintball.Database.Abstractions.Entities;
-
-
-namespace Paintball.Mappers
+﻿namespace Paintball.Mappers
 {
+    using Paintball.Abstractions.Constants;
+    using Paintball.Abstractions.Exceptions;
+    using Paintball.Abstractions.Mappers;
+    using Paintball.Database.Abstractions.Entities;
+
     public class StringToGameResultMapper : IStringToGameResultMapper
 
     {
@@ -13,9 +12,9 @@ namespace Paintball.Mappers
         {
             IList<GameResult> gameResults = new List<GameResult>();
 
-            foreach (var dataString in dataRecords)
+            foreach (string[] dataString in dataRecords)
             {
-                gameResults.Add(MapGameResult(dataString));
+                gameResults.Add(this.MapGameResult(dataString));
             }
 
             return gameResults;
@@ -25,20 +24,20 @@ namespace Paintball.Mappers
         {
             GameResult gameResult = new()
             {
-                Id = ParseStringToExpectedValue(dataRecord[0]),
-                Gameday = ParseStringToExpectedValue(dataRecord[1]),
+                Id = this.ParseStringToExpectedValue(dataRecord[0]),
+                Gameday = this.ParseStringToExpectedValue(dataRecord[1]),
                 TeamOne = dataRecord[2],
                 TeamTwo = dataRecord[3],
-                TeamOneMatchPoints = ParseStringToExpectedValue(dataRecord[4]),
-                TeamTwoMatchPoints = ParseStringToExpectedValue(dataRecord[5])
+                TeamOneMatchPoints = this.ParseStringToExpectedValue(dataRecord[4]),
+                TeamTwoMatchPoints = this.ParseStringToExpectedValue(dataRecord[5])
             };
-        
+
             return gameResult;
         }
 
         private int ParseStringToExpectedValue(string item)
         {
-            if (!int.TryParse(item, out var number))
+            if (!int.TryParse(item, out int number))
             {
                 throw new NotAbleToParseException(ExceptionMessages.ParseError);
             }

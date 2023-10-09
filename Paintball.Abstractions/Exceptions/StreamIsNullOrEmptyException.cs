@@ -2,7 +2,8 @@
 {
     public class StreamIsNullOrEmptyException : Exception
     {
-        public StreamIsNullOrEmptyException(string? message) : base(message)
+        public StreamIsNullOrEmptyException(string? message)
+            : base(message)
         {
         }
     }

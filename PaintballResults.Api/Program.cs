@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Paintball.Abstractions.Converters;
 using Paintball.Abstractions.Mappers;
@@ -11,10 +12,8 @@ using Paintball.Mappers;
 using Paintball.Services;
 using Paintball.Validators;
 using PaintballResults.Api.Middleware;
-using System.Reflection;
 
-
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -37,11 +36,11 @@ builder.Services.AddDbContext<GameResultContext>(
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options =>
 {
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
@@ -51,7 +50,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(
     );
 }
-
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 

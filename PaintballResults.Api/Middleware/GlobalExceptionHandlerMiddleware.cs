@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Paintball.Abstractions.Enums;
 using Paintball.Abstractions.Exceptions;
-using System.Diagnostics.CodeAnalysis;
-using ErrorCodes = Paintball.Abstractions.Enums.ErrorCodes;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace PaintballResults.Api.Middleware
 {
@@ -18,7 +18,7 @@ namespace PaintballResults.Api.Middleware
             }
             catch (Exception e)
             {
-                await HandleExceptionAsync(context, e);
+                await this.HandleExceptionAsync(context, e);
             }
         }
 
@@ -26,9 +26,9 @@ namespace PaintballResults.Api.Middleware
         {
             ErrorCodes errorCodes;
             string message;
-            var statusCode = StatusCodes.Status400BadRequest;
+            int statusCode = StatusCodes.Status400BadRequest;
 
-            var exceptionType = e.GetType();
+            Type exceptionType = e.GetType();
 
             if (exceptionType == typeof(InvalidFileException))
             {
@@ -99,7 +99,7 @@ namespace PaintballResults.Api.Middleware
                 Detail = message
             };
 
-            var exceptionResponse = JsonSerializer.Serialize(exceptionResult);
+            string exceptionResponse = JsonSerializer.Serialize(exceptionResult);
 
             context.Response.ContentType = "application/json";
 

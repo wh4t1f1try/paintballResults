@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Paintball.Abstractions.Services;
-
+using Paintball.Database.Abstractions.Entities;
 
 namespace PaintballResults.Api.Controllers
 {
@@ -8,46 +8,39 @@ namespace PaintballResults.Api.Controllers
     [ApiController]
     public class GameResultController : ControllerBase
     {
-        private IGameResultService GameResultService { get; }
-
         public GameResultController
         (
             IGameResultService gameResultService
         )
         {
-            GameResultService = gameResultService;
+            this.GameResultService = gameResultService;
         }
 
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAllGameResults()
         {
-            var gameResults = GameResultService.GetAll();
-            return Ok(gameResults);
+            IList<GameResult> gameResults = this.GameResultService.GetAll();
+            return this.Ok(gameResults);
         }
 
 
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetGameResultsById([FromRoute] int id)
         {
-            var gameResult = GameResultService.GetById(id);
-            return Ok(gameResult);
+            GameResult gameResult = this.GameResultService.GetById(id);
+            return this.Ok(gameResult);
         }
 
 
         [HttpGet("team/{team}")]
         public async Task<IActionResult> GetAllResultsFromTeam(string team)
         {
-            var gameResults = GameResultService.GetByName(team);
-            return Ok(gameResults);
+            IList<GameResult> gameResults = this.GameResultService.GetByName(team);
+            return this.Ok(gameResults);
         }
 
-        //todo: Zum testen, löschen vor Merge!
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAllResultsFromDatabase()
-        {
-            GameResultService.Delete();
-            return Ok("Deleted.");
-        }
+
+        private IGameResultService GameResultService { get; }
     }
 }

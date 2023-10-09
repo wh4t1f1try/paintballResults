@@ -2,7 +2,8 @@
 {
     public class InvalidGameResultException : Exception
     {
-        public InvalidGameResultException(string? message) : base(message)
+        public InvalidGameResultException(string? message)
+            : base(message)
         {
         }
     }

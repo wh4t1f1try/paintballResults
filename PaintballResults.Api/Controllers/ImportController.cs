@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Paintball.Abstractions.Services;
 
-
 namespace PaintballResults.Api.Controllers
 {
     [Route("api/games")]
@@ -9,18 +8,18 @@ namespace PaintballResults.Api.Controllers
     public class ImportController : ControllerBase
 
     {
-        private IImportService ImportService { get; }
-
         public ImportController(IImportService importService)
         {
-            ImportService = importService;
+            this.ImportService = importService;
         }
 
         [HttpPost("import")]
         public async Task<IActionResult> ImportGameResultCsv(IFormFile file)
         {
-            ImportService.ImportGameResults(file.OpenReadStream());
-            return Ok("Import erfolgreich.");
+            this.ImportService.ImportGameResults(file.OpenReadStream());
+            return this.Ok("Import erfolgreich.");
         }
+
+        private IImportService ImportService { get; }
     }
 }

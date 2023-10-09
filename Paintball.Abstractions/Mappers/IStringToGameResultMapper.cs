@@ -1,7 +1,7 @@
-﻿using Paintball.Database.Abstractions.Entities;
-
-namespace Paintball.Abstractions.Mappers
+﻿namespace Paintball.Abstractions.Mappers
 {
+    using Paintball.Database.Abstractions.Entities;
+
     public interface IStringToGameResultMapper
     {
         GameResult MapGameResult(string[] dataRecord);

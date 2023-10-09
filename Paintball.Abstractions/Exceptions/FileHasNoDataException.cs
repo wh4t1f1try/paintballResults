@@ -2,7 +2,8 @@
 {
     public class FileHasNoDataException : Exception
     {
-        public FileHasNoDataException(string? message) : base(message)
+        public FileHasNoDataException(string? message)
+            : base(message)
         {
         }
     }

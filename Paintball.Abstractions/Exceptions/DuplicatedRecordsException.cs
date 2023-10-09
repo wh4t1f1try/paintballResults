@@ -2,7 +2,8 @@
 {
     public class DuplicatedRecordsException : Exception
     {
-        public DuplicatedRecordsException(string? message) : base(message)
+        public DuplicatedRecordsException(string? message)
+            : base(message)
         {
         }
     }

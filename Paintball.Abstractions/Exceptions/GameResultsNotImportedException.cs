@@ -2,7 +2,8 @@
 {
     public class GameResultsNotImportedException : Exception
     {
-        public GameResultsNotImportedException(string? message) : base(message)
+        public GameResultsNotImportedException(string? message)
+            : base(message)
         {
         }
     }

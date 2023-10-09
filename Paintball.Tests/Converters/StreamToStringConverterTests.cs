@@ -1,19 +1,18 @@
-﻿using FluentAssertions;
+﻿#pragma warning disable SYSLIB0001
+namespace Paintball.Tests.Converters;
+
+using System.Text;
+using FluentAssertions;
 using Paintball.Abstractions.Exceptions;
 using Paintball.Converters;
-using System.Text;
-
-namespace Paintball.Tests.Converters;
 
 [TestClass]
 public class StreamToStringConverterTests
 {
-    private StreamToStringConverter Converter { get; set; }
-
     [TestInitialize]
     public void Setup()
     {
-        Converter = new StreamToStringConverter();
+        this.Converter = new StreamToStringConverter();
     }
 
     [TestMethod]
@@ -22,10 +21,10 @@ public class StreamToStringConverterTests
     {
         //Arrange
 
-        var stream = new MemoryStream(Encoding.UTF7.GetBytes(content));
+        MemoryStream stream = new(Encoding.UTF7.GetBytes(content));
 
         //Act
-        var result = Converter.Convert(stream);
+        IList<string> result = this.Converter.Convert(stream);
 
         //Assert
         result.Should().BeEquivalentTo(content);
@@ -39,7 +38,7 @@ public class StreamToStringConverterTests
         Stream? stream = null;
 
         // Act
-        Action action = () => Converter.Convert(stream);
+        Action action = () => this.Converter.Convert(stream);
 
         // Assert
         action.Should().Throw<StreamIsNullOrEmptyException>();
@@ -49,10 +48,10 @@ public class StreamToStringConverterTests
     public void Convert_WhenStreamIsEmpty_Throws_Exception()
     {
         //Arrange
-        var stream = new MemoryStream();
+        MemoryStream stream = new MemoryStream();
 
         //Act
-        Action action = () => Converter.Convert(stream);
+        Action action = () => this.Converter.Convert(stream);
 
         //Assert
         action.Should().Throw<StreamIsNullOrEmptyException>();
@@ -66,4 +65,6 @@ public class StreamToStringConverterTests
         yield return new[] { "1; 1; Wanderers Bremen; Lucky Bastards; 3; 4 " };
         yield return new[] { "1; 1; Wanderers Bremen; Lucky Bastards; 0; 3 " };
     }
+
+    private StreamToStringConverter Converter { get; set; } = null!;
 }

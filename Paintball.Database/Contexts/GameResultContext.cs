@@ -1,14 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Paintball.Database.Abstractions.Entities;
-
-namespace Paintball.Database.Contexts
+﻿namespace Paintball.Database.Contexts
 {
+    using Microsoft.EntityFrameworkCore;
+    using Paintball.Database.Abstractions.Entities;
+
     public class GameResultContext : DbContext
     {
-        public GameResultContext(DbContextOptions<GameResultContext> options) : base(options)
+        public GameResultContext(DbContextOptions<GameResultContext> options)
+            : base(options)
         {
         }
 
-        public DbSet<GameResult> Gameresults => Set<GameResult>();
+        public DbSet<GameResult> GameResults => this.Set<GameResult>();
     }
 }

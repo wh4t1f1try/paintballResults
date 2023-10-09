@@ -1,7 +1,7 @@
-﻿using Paintball.Database.Abstractions.Entities;
-
-namespace Paintball.Abstractions.Services
+﻿namespace Paintball.Abstractions.Services
 {
+    using Paintball.Database.Abstractions.Entities;
+
     public interface IGameResultService
     {
         IList<GameResult> GetAll();
@@ -9,7 +9,5 @@ namespace Paintball.Abstractions.Services
         GameResult GetById(int id);
 
         IList<GameResult> GetByName(string teamName);
-
-        void Delete();
     }
 }

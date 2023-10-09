@@ -1,10 +1,10 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿namespace Paintball.Validators;
+
+using Microsoft.IdentityModel.Tokens;
 using Paintball.Abstractions.Constants;
 using Paintball.Abstractions.Exceptions;
 using Paintball.Abstractions.Validators;
 using Paintball.Database.Abstractions.Entities;
-
-namespace Paintball.Validators;
 
 public sealed class GameResultValidator : IGameResultValidator
 {
@@ -18,24 +18,43 @@ public sealed class GameResultValidator : IGameResultValidator
 
     public void Validate(GameResult result)
     {
-        if (!IsValidId(result.Id)) throw new InvalidGameResultException(ExceptionMessages.IdIsNotValid);
+        if (!this.IsValidId(result.Id))
+        {
+            throw new InvalidGameResultException(ExceptionMessages.IdIsNotValid);
+        }
 
-        if (!IsValidGameday(result.Gameday)) throw new InvalidGameResultException(ExceptionMessages.GameDayIsNotValid);
+        if (!this.IsValidGameday(result.Gameday))
+        {
+            throw new InvalidGameResultException(ExceptionMessages.GameDayIsNotValid);
+        }
 
-        if (result.TeamOne.IsNullOrEmpty()) throw new InvalidGameResultException(ExceptionMessages.TeamNotValid);
+        if (result.TeamOne.IsNullOrEmpty())
+        {
+            throw new InvalidGameResultException(ExceptionMessages.TeamNotValid);
+        }
 
-        if (result.TeamTwo.IsNullOrEmpty()) throw new InvalidGameResultException(ExceptionMessages.TeamNotValid);
+        if (result.TeamTwo.IsNullOrEmpty())
+        {
+            throw new InvalidGameResultException(ExceptionMessages.TeamNotValid);
+        }
 
-        if (!IsValidTeamMatchPoints(result.TeamOneMatchPoints))
+        if (!this.IsValidTeamMatchPoints(result.TeamOneMatchPoints))
+        {
             throw new InvalidGameResultException(ExceptionMessages.MatchPointsNotValid);
+        }
 
-        if (!IsValidTeamMatchPoints(result.TeamTwoMatchPoints))
+        if (!this.IsValidTeamMatchPoints(result.TeamTwoMatchPoints))
+        {
             throw new InvalidGameResultException(ExceptionMessages.MatchPointsNotValid);
+        }
     }
 
     public void Validate(IList<GameResult> gameResults)
     {
-        foreach (var gameResult in gameResults) Validate(gameResult);
+        foreach (GameResult gameResult in gameResults)
+        {
+            this.Validate(gameResult);
+        }
     }
 
     private bool IsValidId(int id)

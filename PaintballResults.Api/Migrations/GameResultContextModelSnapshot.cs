@@ -1,14 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿#nullable disable
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Paintball.Database.Contexts;
-
-
-#nullable disable
 
 namespace PaintballResults.Api.Migrations
 {
     [DbContext(typeof(GameResultContext))]
-    partial class GameResultContextModelSnapshot : ModelSnapshot
+    internal class GameResultContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -38,7 +37,7 @@ namespace PaintballResults.Api.Migrations
 
                 b.HasKey("Id");
 
-                b.ToTable("Gameresults");
+                b.ToTable("GameResults");
             });
 #pragma warning restore 612, 618
         }

@@ -1,26 +1,23 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using Paintball.Abstractions.Constants;
-using Paintball.Abstractions.Exceptions;
-using Paintball.Abstractions.Services;
-using Paintball.Database.Abstractions.Entities;
-using Paintball.Database.Abstractions.Repositories;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Paintball.Services
+﻿namespace Paintball.Services
 {
+    using Microsoft.IdentityModel.Tokens;
+    using Paintball.Abstractions.Constants;
+    using Paintball.Abstractions.Exceptions;
+    using Paintball.Abstractions.Services;
+    using Paintball.Database.Abstractions.Entities;
+    using Paintball.Database.Abstractions.Repositories;
+
     public class GameResultService : IGameResultService
 
     {
-        private IGameResultRepository GameResultRepository { get; }
-
         public GameResultService(IGameResultRepository gameResultRepository)
         {
-            GameResultRepository = gameResultRepository;
+            this.GameResultRepository = gameResultRepository;
         }
 
         public IList<GameResult> GetAll()
         {
-            var gameResults = GameResultRepository.GetAllGameResults();
+            IList<GameResult> gameResults = this.GameResultRepository.GetAllGameResults();
             if (gameResults.IsNullOrEmpty())
             {
                 throw new GameResultsNotImportedException(ExceptionMessages.GameResultsNotImported);
@@ -31,7 +28,7 @@ namespace Paintball.Services
 
         public GameResult GetById(int id)
         {
-            var gameResult = GameResultRepository.GetGameResultById(id);
+            GameResult? gameResult = this.GameResultRepository.GetGameResultById(id);
             if (gameResult == null)
             {
                 throw new GameResultNotFoundException(ExceptionMessages.GameResultNotFound);
@@ -43,7 +40,7 @@ namespace Paintball.Services
 
         public IList<GameResult> GetByName(string teamName)
         {
-            var gameResults = GameResultRepository.GetAllGameResultsByTeamName(teamName);
+            IList<GameResult> gameResults = this.GameResultRepository.GetAllGameResultsByTeamName(teamName);
             if (gameResults.IsNullOrEmpty())
             {
                 throw new GameResultNotFoundException(ExceptionMessages.GameResultNotFound);
@@ -52,7 +49,6 @@ namespace Paintball.Services
             return gameResults;
         }
 
-        [ExcludeFromCodeCoverage]
-        public void Delete() => GameResultRepository.RemoveAllGameResults();
+        private IGameResultRepository GameResultRepository { get; }
     }
 }

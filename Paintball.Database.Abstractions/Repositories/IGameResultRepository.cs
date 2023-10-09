@@ -1,7 +1,7 @@
-﻿using Paintball.Database.Abstractions.Entities;
-
-namespace Paintball.Database.Abstractions.Repositories
+﻿namespace Paintball.Database.Abstractions.Repositories
 {
+    using Paintball.Database.Abstractions.Entities;
+
     public interface IGameResultRepository
     {
         GameResult GetGameResultById(int id);
@@ -11,9 +11,5 @@ namespace Paintball.Database.Abstractions.Repositories
         IList<GameResult> GetAllGameResultsByTeamName(string teamName);
 
         void InsertAllGameResults(IList<GameResult> gameResults);
-
-        void RemoveAllGameResults();
-
-        void Save();
     }
 }

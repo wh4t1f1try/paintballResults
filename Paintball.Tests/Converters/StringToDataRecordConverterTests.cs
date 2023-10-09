@@ -1,16 +1,16 @@
-﻿using FluentAssertions;
-using Paintball.Converters;
-
-namespace Paintball.Tests.Converters
+﻿namespace Paintball.Tests.Converters
 {
+    using FluentAssertions;
+    using Paintball.Converters;
+
     [TestClass]
     public class StringToDataRecordConverterTests
     {
-        private StringToDataRecordConverter Converter { get; set; }
-
-
         [TestInitialize]
-        public void Setup() => Converter = new StringToDataRecordConverter();
+        public void Setup()
+        {
+            this.Converter = new StringToDataRecordConverter();
+        }
 
         [TestMethod]
         [DynamicData(nameof(CreateValidDataStrings), DynamicDataSourceType.Method)]
@@ -24,10 +24,10 @@ namespace Paintball.Tests.Converters
             string[] expectedValues = { "1", "1", "Wanderers Bremen", "Lucky Bastards", "0", "1" };
 
             //Act
-            var result = Converter.Convert(dataStrings);
+            IList<string[]> result = this.Converter.Convert(dataStrings);
 
             //Assert
-            for (var i = 0; i < expectedValues.Length; i++)
+            for (int i = 0; i < expectedValues.Length; i++)
             {
                 result[0][i].Should().Be(expectedValues[i]);
             }
@@ -37,5 +37,7 @@ namespace Paintball.Tests.Converters
         {
             yield return new[] { "1;1;Wanderers Bremen;Lucky Bastards;0;1" };
         }
+
+        private StringToDataRecordConverter Converter { get; set; } = null!;
     }
 }

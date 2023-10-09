@@ -1,24 +1,21 @@
-﻿using FluentAssertions;
-using NSubstitute;
-using Paintball.Abstractions.Constants;
-using Paintball.Abstractions.Exceptions;
-using Paintball.Database.Abstractions.Entities;
-using Paintball.Database.Abstractions.Repositories;
-using Paintball.Services;
-
-namespace Paintball.Tests.Services
+﻿namespace Paintball.Tests.Services
 {
+    using FluentAssertions;
+    using NSubstitute;
+    using Paintball.Abstractions.Constants;
+    using Paintball.Abstractions.Exceptions;
+    using Paintball.Database.Abstractions.Entities;
+    using Paintball.Database.Abstractions.Repositories;
+    using Paintball.Services;
+
     [TestClass]
     public class GameResultServiceTests
     {
-        private GameResultService GameResultService { get; set; }
-        private IGameResultRepository GameResultRepository { get; set; }
-
         [TestInitialize]
         public void Setup()
         {
-            GameResultRepository = Substitute.For<IGameResultRepository>();
-            GameResultService = new GameResultService(GameResultRepository);
+            this.GameResultRepository = Substitute.For<IGameResultRepository>();
+            this.GameResultService = new GameResultService(this.GameResultRepository);
         }
 
         [TestMethod]
@@ -26,17 +23,17 @@ namespace Paintball.Tests.Services
         {
             IList<GameResult> gameResults = new List<GameResult>
             {
-                new (),
-                new ()
+                new(),
+                new()
             };
 
-            GameResultRepository.GetAllGameResults().Returns(gameResults);
+            this.GameResultRepository.GetAllGameResults().Returns(gameResults);
 
-            var result = GameResultService.GetAll();
+            IList<GameResult> result = this.GameResultService.GetAll();
 
             result.Count().Should().Be(2);
-            GameResultService.Invoking(service => service.GetAll())
-            .Should().NotThrow();
+            this.GameResultService.Invoking(service => service.GetAll())
+                .Should().NotThrow();
         }
 
         [TestMethod]
@@ -44,9 +41,9 @@ namespace Paintball.Tests.Services
         {
             IList<GameResult> gameResults = new List<GameResult>();
 
-            GameResultRepository.GetAllGameResults().Returns(gameResults);
+            this.GameResultRepository.GetAllGameResults().Returns(gameResults);
 
-            GameResultService.Invoking(service => service.GetAll())
+            this.GameResultService.Invoking(service => service.GetAll())
                 .Should().Throw<GameResultsNotImportedException>();
         }
 
@@ -54,10 +51,10 @@ namespace Paintball.Tests.Services
         public void GetById_WhenGameResultExists_ReturnsGameResult()
         {
             int gameId = 1;
-            var expectedGameResult = new GameResult { Id = gameId };
-            GameResultRepository.GetGameResultById(gameId).Returns(expectedGameResult);
+            GameResult expectedGameResult = new GameResult { Id = gameId };
+            this.GameResultRepository.GetGameResultById(gameId).Returns(expectedGameResult);
 
-            var result = GameResultService.GetById(gameId);
+            GameResult result = this.GameResultService.GetById(gameId);
 
             result.Should().NotBeNull();
             result.Should().Be(expectedGameResult);
@@ -67,9 +64,9 @@ namespace Paintball.Tests.Services
         public void GetById_WhenGameResultDoesNotExist_ThrowsGameResultNotFoundException()
         {
             int gameId = 2;
-            GameResultRepository.GetGameResultById(gameId).Returns(null as GameResult);
+            this.GameResultRepository.GetGameResultById(gameId).Returns(null as GameResult);
 
-            GameResultService.Invoking(service => service.GetById(gameId))
+            this.GameResultService.Invoking(service => service.GetById(gameId))
                 .Should().Throw<GameResultNotFoundException>()
                 .WithMessage(ExceptionMessages.GameResultNotFound);
         }
@@ -77,17 +74,17 @@ namespace Paintball.Tests.Services
         [TestMethod]
         public void GetByName_WhenGameResultExist_ReturnsGameResult()
         {
-            var teamOne = "Lucky Bastards";
+            string teamOne = "Lucky Bastards";
 
-            var expectedGameResult = new GameResult { TeamOne = teamOne };
+            GameResult expectedGameResult = new GameResult { TeamOne = teamOne };
             IList<GameResult> gameResults = new List<GameResult>
             {
                 expectedGameResult
             };
 
-            GameResultRepository.GetAllGameResultsByTeamName(teamOne).Returns(gameResults);
+            this.GameResultRepository.GetAllGameResultsByTeamName(teamOne).Returns(gameResults);
 
-            var result = GameResultService.GetByName(teamOne);
+            IList<GameResult> result = this.GameResultService.GetByName(teamOne);
 
             result.Should().NotBeNull();
             result.Should().BeAssignableTo<IList<GameResult>>();
@@ -97,13 +94,16 @@ namespace Paintball.Tests.Services
         [TestMethod]
         public void GetByName_WhenGameResultNotExist_ThrowsGameResultNotFoundException()
         {
-            var teamName = "Team Not Exist";
+            string teamName = "Team Not Exist";
 
-            GameResultRepository.GetAllGameResultsByTeamName(teamName).Returns(new List<GameResult>());
+            this.GameResultRepository.GetAllGameResultsByTeamName(teamName).Returns(new List<GameResult>());
 
-            GameResultService.Invoking(service => service.GetByName(teamName))
+            this.GameResultService.Invoking(service => service.GetByName(teamName))
                 .Should().Throw<GameResultNotFoundException>()
                 .WithMessage(ExceptionMessages.GameResultNotFound);
         }
+
+        private GameResultService GameResultService { get; set; } = null!;
+        private IGameResultRepository GameResultRepository { get; set; } = null!;
     }
 }

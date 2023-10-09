@@ -1,7 +1,7 @@
-﻿using Paintball.Database.Abstractions.Entities;
-
-namespace Paintball.Abstractions.Validators
+﻿namespace Paintball.Abstractions.Validators
 {
+    using Paintball.Database.Abstractions.Entities;
+
     public interface IDuplicatesChecker
     {
         void CheckDuplicates(IList<GameResult> gameResults);

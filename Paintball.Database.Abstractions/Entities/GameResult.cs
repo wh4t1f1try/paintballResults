@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Paintball.Database.Abstractions.Entities;
 
-namespace Paintball.Database.Abstractions.Entities;
+using System.ComponentModel.DataAnnotations;
 
 public class GameResult
 {
@@ -8,9 +8,11 @@ public class GameResult
 
     public int Gameday { get; set; }
 
-    [Required] public string TeamOne { get; set; } = null!;
+    [Required]
+    public string TeamOne { get; set; } = null!;
 
-    [Required] public string TeamTwo { get; set; } = null!;
+    [Required]
+    public string TeamTwo { get; set; } = null!;
 
     public int TeamOneMatchPoints { get; set; }
 
