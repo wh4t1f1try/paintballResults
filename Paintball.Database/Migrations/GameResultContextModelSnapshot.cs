@@ -8,6 +8,9 @@ using Paintball.Database.Contexts;
 
 namespace Paintball.Database.Migrations
 {
+    using System.Diagnostics.CodeAnalysis;
+
+    
     [DbContext(typeof(GameResultContext))]
     partial class GameResultContextModelSnapshot : ModelSnapshot
     {

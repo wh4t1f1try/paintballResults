@@ -1,4 +1,9 @@
-﻿using NSubstitute;
+﻿namespace Paintball.Tests.Services;
+
+using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using NSubstitute;
 using Paintball.Abstractions.Converters;
 using Paintball.Abstractions.Mappers;
 using Paintball.Abstractions.Validators;
@@ -9,80 +14,261 @@ using Paintball.Services;
 [TestClass]
 public class ImportServiceTests
 {
-    private IDuplicatesChecker _checker;
-    private IDataRecordValidator _dataRecordValidator;
-    private ICsvDataStringValidator _dataStringValidator;
-    private ImportService _importService;
-    private IStringToGameResultMapper _mapper;
-    private IGameResultRepository _repository;
-    private IStreamToStringConverter _streamToStringConverter;
-    private IStringToDataRecordConverter _stringToDataRecordConverter;
-    private IGameResultValidator _validator;
+    private IDuplicatesChecker checker;
+    private IDataRecordValidator dataRecordValidator;
+    private ICsvDataStringValidator dataStringValidator;
+    private ImportService importService;
+    private IStringToGameResultMapper mapper;
+    private IGameResultRepository repository;
+    private IStreamToStringConverter streamToStringConverter;
+    private IStringToDataRecordConverter stringToDataRecordConverter;
+    private IGameResultValidator validator;
 
     [TestInitialize]
     public void Setup()
     {
-        this._mapper = Substitute.For<IStringToGameResultMapper>();
-        this._validator = Substitute.For<IGameResultValidator>();
-        this._streamToStringConverter = Substitute.For<IStreamToStringConverter>();
-        this._repository = Substitute.For<IGameResultRepository>();
-        this._dataStringValidator = Substitute.For<ICsvDataStringValidator>();
-        this._checker = Substitute.For<IDuplicatesChecker>();
-        this._stringToDataRecordConverter = Substitute.For<IStringToDataRecordConverter>();
-        this._dataRecordValidator = Substitute.For<IDataRecordValidator>();
-        this._importService = new ImportService(this._mapper, this._validator, this._streamToStringConverter,
-            this._repository, this._dataStringValidator, this._checker, this._stringToDataRecordConverter,
-            this._dataRecordValidator);
+        this.mapper = Substitute.For<IStringToGameResultMapper>();
+        this.validator = Substitute.For<IGameResultValidator>();
+        this.streamToStringConverter = Substitute.For<IStreamToStringConverter>();
+        this.repository = Substitute.For<IGameResultRepository>();
+        this.dataStringValidator = Substitute.For<ICsvDataStringValidator>();
+        this.checker = Substitute.For<IDuplicatesChecker>();
+        this.stringToDataRecordConverter = Substitute.For<IStringToDataRecordConverter>();
+        this.dataRecordValidator = Substitute.For<IDataRecordValidator>();
+        this.importService = new ImportService(this.mapper, this.validator, this.streamToStringConverter,
+            this.repository, this.dataStringValidator, this.checker, this.stringToDataRecordConverter,
+            this.dataRecordValidator);
     }
 
     [TestMethod]
-    public void ImportGameResults_ShouldCallAllServices_WhenStreamIsNotNull()
+    public void ImportGameResults_Call_IStreamToStringConverter_Convert()
     {
-        // Arrange
-        MemoryStream stream = new MemoryStream();
+        //Arrange
+        MemoryStream stream = new();
+        //Act
+        this.importService.ImportGameResults(stream);
+        //Assert
+        this.streamToStringConverter.Received().Convert(stream);
+    }
 
+    [TestMethod]
+    public void ImportGameReuslts_Call_ICsvDataStringValidator_Validate()
+    {
+        //Arrange
+        Stream stream = CreateFile().OpenReadStream();
         IList<string> dataStrings = new List<string>
         {
-            "Spiel,Tag, Team 1, Team 2, T1 MP, T2 MP",
-            "1,1, Team 1, Team 2,0,5"
+            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
+            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
+        };
+        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
+        //Act
+        this.importService.ImportGameResults(stream);
+        //Assert
+        this.dataStringValidator.Received().Validate(dataStrings);
+    }
+
+    [TestMethod]
+    public void ImportGameResult_Call_IStringToDataRecordConverter_Convert()
+    {
+        //Arrange
+        Stream stream = CreateFile().OpenReadStream();
+        IList<string> dataStrings = new List<string>
+        {
+            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
+            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
+        };
+        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
+        this.dataStringValidator.Validate(dataStrings);
+        //Act
+        this.importService.ImportGameResults(stream);
+        //Assert
+        this.stringToDataRecordConverter.Received().Convert(dataStrings);
+    }
+
+    [TestMethod]
+    public void ImportGameResult_Call_IDataRecordValidator_Validate()
+    {
+        //Arrange
+        Stream stream = CreateFile().OpenReadStream();
+        IList<string> dataStrings = new List<string>
+        {
+            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
+            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
         };
 
-        IList<string[]> dataRecords = new List<string[]>
+        IList<string[]> dataRecord = new List<string[]>
+        {
+            new[] { "1", "1", "Wanderers Bremen", "Lucky Bastards", "1", "4" }
+        };
+
+        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
+        this.dataStringValidator.Validate(dataStrings);
+        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
+        //Act
+        this.importService.ImportGameResults(stream);
+        //Assert
+        this.dataRecordValidator.Received().Validate(dataRecord);
+    }
+
+    [TestMethod]
+    public void ImportGameResult_Call_IStringToGameResultMapper_MapGameResult()
+    {
+        //Arrange
+        Stream stream = CreateFile().OpenReadStream();
+        IList<string> dataStrings = new List<string>
+        {
+            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
+            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
+        };
+
+        IList<string[]> dataRecord = new List<string[]>
         {
             new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
-            new[] { "1", "1", "Team 1", "Team 2", "0", "5" }
+            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
         };
+
+        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecord.Skip(1));
+
+        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
+        this.dataStringValidator.Validate(dataStrings);
+        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
+        this.dataRecordValidator.Validate(dataRecord);
+        //Act
+        this.importService.ImportGameResults(stream);
+        //Assert
+        this.mapper.Received()
+            .MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(dataRecordsWithoutHeader)));
+    }
+
+    [TestMethod]
+    public void ImportGameResult_Call_DuplicatesChecker_CheckDuplicates()
+    {
+        //Arrange
+        Stream stream = CreateFile().OpenReadStream();
+        IList<string> dataStrings = new List<string>
+        {
+            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
+            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
+        };
+
+        IList<string[]> dataRecord = new List<string[]>
+        {
+            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
+            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
+        };
+
+        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecord.Skip(1));
 
         IList<GameResult> gameResults = new List<GameResult>
         {
-            new GameResult
-            {
-                Id = 1,
-                GameDay = 1,
-                TeamOne = "Team 1",
-                TeamTwo = "Team 2",
-                TeamOneMatchPoints = 0,
-                TeamTwoMatchPoints = 5
-            },
+            new() { Id = 1 },
+            new() { Id = 2 }
         };
 
-        this._streamToStringConverter.Convert(stream).Returns(dataStrings);
-        this._stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecords);
-        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecords.Skip(1));
-        this._mapper.MapGameResult(dataRecordsWithoutHeader).Returns(gameResults);
+        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
+        this.dataStringValidator.Validate(dataStrings);
+        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
+        this.dataRecordValidator.Validate(dataRecord);
+        this.mapper.MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(dataRecordsWithoutHeader)))
+            .Returns(gameResults);
+        //Act
+        this.importService.ImportGameResults(stream);
+        //Assert
+        this.checker.Received().CheckDuplicates(gameResults);
+    }
 
-        // Act
-        this._importService.ImportGameResults(stream);
+    [TestMethod]
+    public void ImportGameResult_Call_GameResultValidator_Validate()
+    {
+        //Arrange
+        Stream stream = CreateFile().OpenReadStream();
+        IList<string> dataStrings = new List<string>
+        {
+            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
+            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
+        };
 
-        // Assert
-        this._streamToStringConverter.Received().Convert(stream);
-        this._dataStringValidator.Received().Validate(dataStrings);
-        this._stringToDataRecordConverter.Received().Convert(dataStrings);
-        this._dataRecordValidator.Received().Validate(dataRecords);
+        IList<string[]> dataRecord = new List<string[]>
+        {
+            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
+            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
+        };
 
-        //this._mapper.Received().MapGameResult(dataRecordsWithoutHeader);
-        //this._checker.Received().CheckDuplicates(gameResults);
-        //this._validator.Received().Validate(gameResults);
-        //this._repository.Received().InsertAllGameResults(gameResults);
+        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecord.Skip(1));
+
+        IList<GameResult> gameResults = new List<GameResult>
+        {
+            new() { Id = 1 },
+            new() { Id = 2 }
+        };
+
+        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
+        this.dataStringValidator.Validate(dataStrings);
+        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
+        this.dataRecordValidator.Validate(dataRecord);
+        this.mapper.MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(dataRecordsWithoutHeader)))
+            .Returns(gameResults);
+        this.checker.CheckDuplicates(gameResults);
+        //Act
+        this.importService.ImportGameResults(stream);
+        //Assert
+        this.validator.Received().Validate(gameResults);
+    }
+
+    [TestMethod]
+    public void ImportGameResult_Call_GameResultRepository_InsertAllGameResults()
+    {
+        //Arrange
+        Stream stream = CreateFile().OpenReadStream();
+        IList<string> dataStrings = new List<string>
+        {
+            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
+            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
+        };
+
+        IList<string[]> dataRecord = new List<string[]>
+        {
+            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
+            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
+        };
+
+        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecord.Skip(1));
+
+        IList<GameResult> gameResults = new List<GameResult>
+        {
+            new() { Id = 1 },
+            new() { Id = 2 }
+        };
+
+        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
+        this.dataStringValidator.Validate(dataStrings);
+        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
+        this.dataRecordValidator.Validate(dataRecord);
+        this.mapper.MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(dataRecordsWithoutHeader)))
+            .Returns(gameResults);
+        this.checker.CheckDuplicates(gameResults);
+        this.validator.Validate(gameResults);
+        //Act
+        this.importService.ImportGameResults(stream);
+        //Assert
+        this.repository.Received().InsertAllGameResults(gameResults);
+    }
+
+    private static IFormFile CreateFile()
+    {
+        StringBuilder content = new StringBuilder();
+        content.AppendLine("Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP")
+            .AppendLine("1;1;Virst Factory Lódz;Ballistics Göttingen;4;5");
+
+        string fileName = "test.pdf";
+        MemoryStream stream = new MemoryStream();
+        StreamWriter writer = new StreamWriter(stream);
+        writer.Write(content);
+        writer.Flush();
+        stream.Position = 0;
+        IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+
+        return file;
     }
 }

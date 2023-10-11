@@ -9,6 +9,9 @@ using Paintball.Database.Contexts;
 
 namespace Paintball.Database.Migrations
 {
+    using System.Diagnostics.CodeAnalysis;
+
+    
     [DbContext(typeof(GameResultContext))]
     [Migration("20231011054732_Initial")]
     partial class Initial

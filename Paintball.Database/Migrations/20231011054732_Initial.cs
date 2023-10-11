@@ -4,6 +4,9 @@
 
 namespace Paintball.Database.Migrations
 {
+    using System.Diagnostics.CodeAnalysis;
+
+   
     /// <inheritdoc />
     public partial class Initial : Migration
     {

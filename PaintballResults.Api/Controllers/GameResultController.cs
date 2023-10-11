@@ -37,9 +37,6 @@ namespace PaintballResults.Api.Controllers
             return this.Ok(gameResults);
         }
 
-        //[HttpGet("all")]
-        //public IList<GameResultDto> GetAllGameResults() => this.GameResultService.GetAll();
-
         private IGameResultService GameResultService { get; }
     }
 }
