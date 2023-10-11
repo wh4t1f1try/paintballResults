@@ -24,10 +24,8 @@ public class DataRecordValidatorTests
             new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
             new[] { "1", "1", "Wanderers Bremen", "Lucky Bastards", "1", "4" }
         };
-
         //Act
         Action action = delegate { this.DataRecordValidator.Validate(validDataRecord); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -43,7 +41,6 @@ public class DataRecordValidatorTests
         };
         //Act
         Action action = delegate { this.DataRecordValidator.Validate(invalidDataRecord); };
-
         //Assert 
         action.Should().Throw<InvalidRecordException>().WithMessage(ExceptionMessages.InvalidHeader);
     }
@@ -59,7 +56,6 @@ public class DataRecordValidatorTests
         };
         //Act
         Action action = delegate { this.DataRecordValidator.Validate(invalidDataRecord); };
-
         //Assert
         action.Should().Throw<InvalidRecordException>().WithMessage(ExceptionMessages.InvalidRecord);
     }
@@ -75,7 +71,6 @@ public class DataRecordValidatorTests
         };
         //Act
         Action action = delegate { this.DataRecordValidator.Validate(invalidDataRecord); };
-
         //Assert
         action.Should().Throw<InvalidRecordException>().WithMessage(ExceptionMessages.InvalidRecord);
     }
@@ -91,10 +86,9 @@ public class DataRecordValidatorTests
         };
         //Act
         Action action = delegate { this.DataRecordValidator.Validate(invalidDataRecord); };
-
         //Assert
         action.Should().Throw<InvalidRecordException>().WithMessage(ExceptionMessages.InvalidRecord);
     }
 
-    public DataRecordValidator DataRecordValidator { get; set; } = null!;
+    private DataRecordValidator DataRecordValidator { get; set; } = null!;
 }

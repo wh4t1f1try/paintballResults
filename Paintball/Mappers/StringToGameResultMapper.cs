@@ -24,18 +24,18 @@
         {
             GameResult gameResult = new()
             {
-                Id = this.ParseStringToExpectedValue(dataRecord[0]),
-                GameDay = this.ParseStringToExpectedValue(dataRecord[1]),
+                Id = ParseStringToExpectedValue(dataRecord[0]),
+                GameDay = ParseStringToExpectedValue(dataRecord[1]),
                 TeamOne = dataRecord[2],
                 TeamTwo = dataRecord[3],
-                TeamOneMatchPoints = this.ParseStringToExpectedValue(dataRecord[4]),
-                TeamTwoMatchPoints = this.ParseStringToExpectedValue(dataRecord[5])
+                TeamOneMatchPoints = ParseStringToExpectedValue(dataRecord[4]),
+                TeamTwoMatchPoints = ParseStringToExpectedValue(dataRecord[5])
             };
 
             return gameResult;
         }
 
-        private int ParseStringToExpectedValue(string item)
+        private static int ParseStringToExpectedValue(string item)
         {
             if (!int.TryParse(item, out int number))
             {

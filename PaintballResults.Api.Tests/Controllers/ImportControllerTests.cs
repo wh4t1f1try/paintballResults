@@ -1,4 +1,8 @@
-﻿using FluentAssertions;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+namespace PaintballResults.Api.Tests.Controllers;
+
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -8,14 +12,14 @@ using PaintballResults.Api.Controllers;
 [TestClass]
 public class ImportControllerTests
 {
-    private ImportController _importController;
-    private IImportService _importService;
+    private ImportController importController;
+    private IImportService importService;
 
     [TestInitialize]
     public void Setup()
     {
-        this._importService = Substitute.For<IImportService>();
-        this._importController = new ImportController(this._importService);
+        this.importService = Substitute.For<IImportService>();
+        this.importController = new ImportController(this.importService);
     }
 
     [TestMethod]
@@ -26,9 +30,9 @@ public class ImportControllerTests
         MemoryStream sourceStream = new MemoryStream();
         fileMock.OpenReadStream().Returns(sourceStream);
         // Act
-        IActionResult result = await this._importController.ImportGameResultCsv(fileMock);
+        IActionResult result = await this.importController.ImportGameResultCsv(fileMock);
         // Assert
-        this._importService.Received(1).ImportGameResults(Arg.Any<Stream>());
+        this.importService.Received(1).ImportGameResults(Arg.Any<Stream>());
         OkObjectResult? okResult = result.Should().BeOfType<OkObjectResult>().Subject;
         okResult.Value.Should().Be("Import erfolgreich.");
     }

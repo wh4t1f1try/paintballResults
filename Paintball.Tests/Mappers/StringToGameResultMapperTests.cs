@@ -16,17 +16,15 @@ public class StringToGameResultMapperTests
     }
 
     [TestMethod]
-    public void MapGameresult_ValidData_ReturnGameResult_NotThrowsException()
+    public void MapGameResult_ValidData_ReturnGameResult_NotThrowsException()
     {
         // Arrange
         string[] validDataRecord =
         {
             "1", "1", "Wanderers Bremen", "Lucky Bastards", "1", "4"
         };
-
         // Act
         GameResult gameResult = this.Mapper.MapGameResult(validDataRecord);
-
         // Assert
         gameResult.Should().NotBeNull();
         gameResult.Id.Should().Be(1);
@@ -41,8 +39,9 @@ public class StringToGameResultMapperTests
     }
 
     [TestMethod]
-    public void MapGameResult_ValidData_ReturnGameResultCollection_NotThrwosException()
+    public void MapGameResult_ValidData_ReturnGameResultCollection_NotThrowsException()
     {
+        //Arrange
         IList<string[]> validDataRecords = new List<string[]>();
 
         string[] dataRecord =
@@ -51,12 +50,11 @@ public class StringToGameResultMapperTests
         };
 
         validDataRecords.Add(dataRecord);
-
+        //Act
         IList<GameResult> gameResults = this.Mapper.MapGameResult(validDataRecords);
 
         gameResults.Should().NotBeEmpty()
             .And.HaveCount(1);
-
         gameResults[0].Id.Should().Be(1);
         gameResults[0].Id.Should().Be(1);
         gameResults[0].GameDay.Should().Be(1);
@@ -64,7 +62,7 @@ public class StringToGameResultMapperTests
         gameResults[0].TeamTwo.Should().Be("Lucky Bastards");
         gameResults[0].TeamOneMatchPoints.Should().Be(1);
         gameResults[0].TeamTwoMatchPoints.Should().Be(4);
-
+        //Assert
         this.Mapper.Invoking(m => m.MapGameResult(validDataRecords))
             .Should().NotThrow();
     }
@@ -72,12 +70,12 @@ public class StringToGameResultMapperTests
     [TestMethod]
     public void MapGameResult_InvalidData_ThrowsNotAbleToParseExceptionWithCorrectMessage()
     {
+        //Arrange
         string[] dataRecord =
         {
             "a", "1", "Wanderers Bremen", "Lucky Bastards", "0", "4"
         };
-
-
+        //Act - Assert
         this.Mapper.Invoking(m => m.MapGameResult(dataRecord))
             .Should().Throw<NotAbleToParseException>()
             .WithMessage(ExceptionMessages.ParseError);

@@ -18,7 +18,6 @@ public class GameResultMapperTests
     public void MapToGameResultDto_Returns_GameResultDtoWithGivenValues()
     {
         //Arrange
-
         GameResult gameResult = new()
         {
             Id = 1,
@@ -30,7 +29,6 @@ public class GameResultMapperTests
         };
         //Act
         GameResultDto result = this.GameResultMapper!.Map(gameResult);
-
         //Assert
         result.Should().NotBeNull();
         result.Id.Should().Be(1);
@@ -61,7 +59,6 @@ public class GameResultMapperTests
 
         // Act
         IList<GameResultDto> gameResultDtos = this.GameResultMapper!.Map(gameResults);
-
         // Assert
         gameResultDtos.Should().NotBeNull();
         gameResultDtos.Should().HaveCount(gameResults.Count);

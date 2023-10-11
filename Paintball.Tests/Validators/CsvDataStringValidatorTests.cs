@@ -29,10 +29,8 @@ public class CsvDataStringValidatorTests
             "1;1;Wanderers Bremen;Lucky Bastards;0;4",
             "1;1;Wanderers Bremen;Lucky Bastards;0;4"
         };
-
         //Act
         Action action = delegate { this.Validator!.Validate(dataStrings); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -43,12 +41,10 @@ public class CsvDataStringValidatorTests
         //Arrange
         IList<string> dataStrings = new List<string>
         {
-            this.GenerateRandomString(12, 20)
+            GenerateRandomString(12, 20)
         };
-
         //Act
         Action action = delegate { this.Validator!.Validate(dataStrings); };
-
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.NoDelimitersFound);
     }
@@ -64,7 +60,6 @@ public class CsvDataStringValidatorTests
         };
         //Act
         Action action = delegate { this.Validator!.Validate(dataStrings); };
-
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.InvalidDataString);
     }
@@ -75,11 +70,10 @@ public class CsvDataStringValidatorTests
         //Arrange
         IList<string> dataStrings = new List<string>
         {
-            this.GenerateRandomString(5, 10)
+            GenerateRandomString(5, 10)
         };
         //Act
         Action action = delegate { this.Validator!.Validate(dataStrings); };
-
         //Assert
         action.Should().Throw<InvalidDataStringException>().WithMessage(ExceptionMessages.InvalidDataString);
     }
@@ -94,16 +88,14 @@ public class CsvDataStringValidatorTests
         {
             dataString
         };
-
         //Act
         Action action = delegate { this.Validator!.Validate(dataStrings); };
-
         //Assert
         action.Should().NotThrow();
     }
 
     [ExcludeFromCodeCoverage]
-    private string GenerateRandomString(int start, int end)
+    private static string GenerateRandomString(int start, int end)
     {
         if (start < 0 || end < 0 || start > end)
         {

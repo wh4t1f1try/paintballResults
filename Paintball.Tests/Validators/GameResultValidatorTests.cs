@@ -20,11 +20,9 @@ public class GameResultValidatorTests
     public void GetValidGameResult_NotThrow_When_GameResultIsValid()
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
-
+        GameResult gameResult = CreateValidGameResult();
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -37,12 +35,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_OrThrow_InvalidGameResultException_When_IdNotValid(int id)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.Id = id;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().Throw<InvalidGameResultException>()
             .WithMessage(ExceptionMessages.IdIsNotValid);
@@ -55,12 +51,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_NotThrowException_When_IdIsValid(int id)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.Id = id;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -74,12 +68,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_OrThrow_InvalidGameResultException_When_GameDayNotValid(int gameDay)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.GameDay = gameDay;
-
         //Action
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().Throw<InvalidGameResultException>()
             .WithMessage(ExceptionMessages.GameDayIsNotValid);
@@ -92,12 +84,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_NotThrow_WhenGameDayIsValid(int gameDay)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.GameDay = gameDay;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -109,12 +99,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_OrThrow_InvalidGameResultException_When_TeamOneNotValid(string? teamOne)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.TeamOne = teamOne!;
-
         //Action
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().Throw<InvalidGameResultException>()
             .WithMessage(ExceptionMessages.TeamNotValid);
@@ -127,12 +115,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_NotThrow_When_TeamOneIsValid(string? teamOne)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.TeamOne = teamOne!;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -143,12 +129,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_OrThrow_InvalidGameResultException_When_TeamTwoNotValid(string? teamTwo)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.TeamOne = teamTwo!;
-
         //Action
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().Throw<InvalidGameResultException>()
             .WithMessage(ExceptionMessages.TeamNotValid);
@@ -161,12 +145,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_NotThrow_When_TeamTwoIsValid(string? teamTwo)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.TeamOne = teamTwo!;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -178,12 +160,10 @@ public class GameResultValidatorTests
         int teamOneMatchPoints)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.TeamOneMatchPoints = teamOneMatchPoints;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().Throw<InvalidGameResultException>()
             .WithMessage(ExceptionMessages.MatchPointsNotValid);
@@ -196,12 +176,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_NotThrow_When_TeamOneMatchPointsValid(int teamOneMatchPoints)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.TeamOneMatchPoints = teamOneMatchPoints;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -213,12 +191,10 @@ public class GameResultValidatorTests
         int teamTwoMatchPoints)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.TeamOneMatchPoints = teamTwoMatchPoints;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().Throw<InvalidGameResultException>()
             .WithMessage(ExceptionMessages.MatchPointsNotValid);
@@ -231,12 +207,10 @@ public class GameResultValidatorTests
     public void GetValidGameResult_NotThrow_When_TeamTwoMatchPointsValid(int teamTwoMatchPoints)
     {
         //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
+        GameResult gameResult = CreateValidGameResult();
         gameResult.TeamOneMatchPoints = teamTwoMatchPoints;
-
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -248,12 +222,10 @@ public class GameResultValidatorTests
         //Arrange
         IList<GameResult> gameResults = new List<GameResult>
         {
-            this.CreateValidGameResult()
+            CreateValidGameResult()
         };
-
         //Act
         Action action = delegate { this.Validator.Validate(gameResults); };
-
         //Assert
         action.Should().NotThrow();
     }
@@ -271,7 +243,6 @@ public class GameResultValidatorTests
             TeamOneMatchPoints = 5,
             TeamTwoMatchPoints = 0
         };
-
         //Action & Assert
         this.Validator.Invoking(v => v.Validate(gameResult))
             .Should().Throw<InvalidGameResultException>().WithMessage(ExceptionMessages.TeamNotValid);
@@ -291,14 +262,30 @@ public class GameResultValidatorTests
             TeamOneMatchPoints = 5,
             TeamTwoMatchPoints = invalidMatchPoints
         };
-
         //Action & Assert
         this.Validator.Invoking(v => v.Validate(gameResult))
             .Should().Throw<InvalidGameResultException>().WithMessage(ExceptionMessages.MatchPointsNotValid);
     }
 
+    [TestMethod]
+    public void CreateValidGameResultReturnValidGameResult()
+    {
+        //Arrange
+        GameResult gameResult = CreateValidGameResult();
+        //Act
+        Action action = () => { this.Validator.Validate(gameResult); };
+        //Assert
+        gameResult.Id.Should().Be(1);
+        gameResult.GameDay.Should().Be(1);
+        gameResult.TeamOne.Should().Be("Lucky Bastards");
+        gameResult.TeamTwo.Should().Be("Nordic Skullz");
+        gameResult.TeamOneMatchPoints.Should().Be(0);
+        gameResult.TeamTwoMatchPoints.Should().Be(4);
+        action.Should().NotThrow();
+        action.Should().NotBeNull();
+    }
 
-    private GameResult CreateValidGameResult()
+    private static GameResult CreateValidGameResult()
     {
         GameResult result = new()
         {
@@ -311,27 +298,6 @@ public class GameResultValidatorTests
         };
 
         return result;
-    }
-
-
-    [TestMethod]
-    public void CreateValidGameResultReturnValidGameResult()
-    {
-        //Arrange
-        GameResult gameResult = this.CreateValidGameResult();
-
-        //Act
-        Action action = () => { this.Validator.Validate(gameResult); };
-
-        //Assert
-        gameResult.Id.Should().Be(1);
-        gameResult.GameDay.Should().Be(1);
-        gameResult.TeamOne.Should().Be("Lucky Bastards");
-        gameResult.TeamTwo.Should().Be("Nordic Skullz");
-        gameResult.TeamOneMatchPoints.Should().Be(0);
-        gameResult.TeamTwoMatchPoints.Should().Be(4);
-        action.Should().NotThrow();
-        action.Should().NotBeNull();
     }
 
     private GameResultValidator Validator { get; set; } = null!;

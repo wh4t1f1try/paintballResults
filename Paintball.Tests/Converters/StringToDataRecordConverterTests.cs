@@ -22,10 +22,8 @@
                 dataString
             };
             string[] expectedValues = { "1", "1", "Wanderers Bremen", "Lucky Bastards", "0", "1" };
-
             //Act
             IList<string[]> result = this.Converter.Convert(dataStrings);
-
             //Assert
             for (int i = 0; i < expectedValues.Length; i++)
             {

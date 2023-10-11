@@ -6,26 +6,26 @@
 
     public class GameResultRepository : IGameResultRepository
     {
-        private readonly GameResultContext _gameResultContext;
+        private readonly GameResultContext gameResultContext;
 
         public GameResultRepository(GameResultContext gameResultContext)
         {
-            this._gameResultContext = gameResultContext;
+            this.gameResultContext = gameResultContext;
         }
 
         public GameResult GetGameResultById(int id)
         {
-            return this._gameResultContext.GameResults.Find(id)!;
+            return this.gameResultContext.GameResults.Find(id)!;
         }
 
         public IList<GameResult> GetAllGameResults()
         {
-            return this._gameResultContext.GameResults.ToList();
+            return this.gameResultContext.GameResults.ToList();
         }
 
         public IList<GameResult> GetAllGameResultsByTeamName(string teamName)
         {
-            List<GameResult> gameResultsFromTeam = this._gameResultContext.GameResults
+            List<GameResult> gameResultsFromTeam = this.gameResultContext.GameResults
                 .Where(result => result.TeamOne.Contains(teamName) || result.TeamTwo.Contains(teamName))
                 .ToList();
             return gameResultsFromTeam;
@@ -33,9 +33,9 @@
 
         public void InsertAllGameResults(IList<GameResult> gameResults)
         {
-            this._gameResultContext.RemoveRange(this._gameResultContext.GameResults);
-            this._gameResultContext.GameResults.AddRange(gameResults);
-            this._gameResultContext.SaveChanges();
+            this.gameResultContext.RemoveRange(this.gameResultContext.GameResults);
+            this.gameResultContext.GameResults.AddRange(gameResults);
+            this.gameResultContext.SaveChanges();
         }
     }
 }

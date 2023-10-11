@@ -1,4 +1,5 @@
-﻿namespace Paintball.Tests.Services;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+namespace Paintball.Tests.Services;
 
 using System.Text;
 using Microsoft.AspNetCore.Http;
@@ -14,29 +15,57 @@ using Paintball.Services;
 [TestClass]
 public class ImportServiceTests
 {
-    private IDuplicatesChecker checker;
+    private IList<string[]> dataRecords;
+    private IList<string[]> dataRecordsWithoutHeader;
     private IDataRecordValidator dataRecordValidator;
+    private IList<string> dataStrings;
     private ICsvDataStringValidator dataStringValidator;
+    private IDuplicatesChecker duplicatesChecker;
+    private IGameResultRepository gameResultRepository;
+    private IList<GameResult> gameResults;
+    private IGameResultValidator gameResultValidator;
     private ImportService importService;
-    private IStringToGameResultMapper mapper;
-    private IGameResultRepository repository;
+    private Stream stream;
     private IStreamToStringConverter streamToStringConverter;
     private IStringToDataRecordConverter stringToDataRecordConverter;
-    private IGameResultValidator validator;
+    private IStringToGameResultMapper stringToGameResultMapper;
 
     [TestInitialize]
     public void Setup()
     {
-        this.mapper = Substitute.For<IStringToGameResultMapper>();
-        this.validator = Substitute.For<IGameResultValidator>();
+        this.stream = CreateFile().OpenReadStream();
+        this.dataStrings = new List<string>
+        {
+            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
+            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
+        };
+
+        this.dataRecords = new List<string[]>
+        {
+            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
+            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
+        };
+
+        this.dataRecordsWithoutHeader = new List<string[]>(this.dataRecords.Skip(1));
+
+        this.gameResults = new List<GameResult>
+        {
+            new() { Id = 1 },
+            new() { Id = 2 }
+        };
+
+        this.stringToGameResultMapper = Substitute.For<IStringToGameResultMapper>();
+        this.gameResultValidator = Substitute.For<IGameResultValidator>();
         this.streamToStringConverter = Substitute.For<IStreamToStringConverter>();
-        this.repository = Substitute.For<IGameResultRepository>();
+        this.gameResultRepository = Substitute.For<IGameResultRepository>();
         this.dataStringValidator = Substitute.For<ICsvDataStringValidator>();
-        this.checker = Substitute.For<IDuplicatesChecker>();
+        this.duplicatesChecker = Substitute.For<IDuplicatesChecker>();
         this.stringToDataRecordConverter = Substitute.For<IStringToDataRecordConverter>();
         this.dataRecordValidator = Substitute.For<IDataRecordValidator>();
-        this.importService = new ImportService(this.mapper, this.validator, this.streamToStringConverter,
-            this.repository, this.dataStringValidator, this.checker, this.stringToDataRecordConverter,
+        this.importService = new ImportService(this.stringToGameResultMapper, this.gameResultValidator,
+            this.streamToStringConverter,
+            this.gameResultRepository, this.dataStringValidator, this.duplicatesChecker,
+            this.stringToDataRecordConverter,
             this.dataRecordValidator);
     }
 
@@ -55,204 +84,105 @@ public class ImportServiceTests
     public void ImportGameReuslts_Call_ICsvDataStringValidator_Validate()
     {
         //Arrange
-        Stream stream = CreateFile().OpenReadStream();
-        IList<string> dataStrings = new List<string>
-        {
-            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
-            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
-        };
-        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
+        this.streamToStringConverter.Convert(this.stream).Returns(this.dataStrings);
         //Act
-        this.importService.ImportGameResults(stream);
+        this.importService.ImportGameResults(this.stream);
         //Assert
-        this.dataStringValidator.Received().Validate(dataStrings);
+        this.dataStringValidator.Received().Validate(this.dataStrings);
     }
 
     [TestMethod]
     public void ImportGameResult_Call_IStringToDataRecordConverter_Convert()
     {
         //Arrange
-        Stream stream = CreateFile().OpenReadStream();
-        IList<string> dataStrings = new List<string>
-        {
-            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
-            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
-        };
-        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
-        this.dataStringValidator.Validate(dataStrings);
+        this.streamToStringConverter.Convert(this.stream).Returns(this.dataStrings);
+        this.dataStringValidator.Validate(this.dataStrings);
         //Act
-        this.importService.ImportGameResults(stream);
+        this.importService.ImportGameResults(this.stream);
         //Assert
-        this.stringToDataRecordConverter.Received().Convert(dataStrings);
+        this.stringToDataRecordConverter.Received().Convert(this.dataStrings);
     }
 
     [TestMethod]
     public void ImportGameResult_Call_IDataRecordValidator_Validate()
     {
         //Arrange
-        Stream stream = CreateFile().OpenReadStream();
-        IList<string> dataStrings = new List<string>
-        {
-            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
-            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
-        };
-
-        IList<string[]> dataRecord = new List<string[]>
-        {
-            new[] { "1", "1", "Wanderers Bremen", "Lucky Bastards", "1", "4" }
-        };
-
-        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
-        this.dataStringValidator.Validate(dataStrings);
-        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
+        this.streamToStringConverter.Convert(this.stream).Returns(this.dataStrings);
+        this.dataStringValidator.Validate(this.dataStrings);
+        this.stringToDataRecordConverter.Convert(this.dataStrings).Returns(this.dataRecords);
         //Act
-        this.importService.ImportGameResults(stream);
+        this.importService.ImportGameResults(this.stream);
         //Assert
-        this.dataRecordValidator.Received().Validate(dataRecord);
+        this.dataRecordValidator.Received().Validate(this.dataRecords);
     }
 
     [TestMethod]
     public void ImportGameResult_Call_IStringToGameResultMapper_MapGameResult()
     {
         //Arrange
-        Stream stream = CreateFile().OpenReadStream();
-        IList<string> dataStrings = new List<string>
-        {
-            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
-            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
-        };
-
-        IList<string[]> dataRecord = new List<string[]>
-        {
-            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
-            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
-        };
-
-        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecord.Skip(1));
-
-        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
-        this.dataStringValidator.Validate(dataStrings);
-        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
-        this.dataRecordValidator.Validate(dataRecord);
+        this.streamToStringConverter.Convert(this.stream).Returns(this.dataStrings);
+        this.dataStringValidator.Validate(this.dataStrings);
+        this.stringToDataRecordConverter.Convert(this.dataStrings).Returns(this.dataRecords);
+        this.dataRecordValidator.Validate(this.dataRecords);
         //Act
-        this.importService.ImportGameResults(stream);
+        this.importService.ImportGameResults(this.stream);
         //Assert
-        this.mapper.Received()
-            .MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(dataRecordsWithoutHeader)));
+        this.stringToGameResultMapper.Received()
+            .MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(this.dataRecordsWithoutHeader)));
     }
 
     [TestMethod]
     public void ImportGameResult_Call_DuplicatesChecker_CheckDuplicates()
     {
         //Arrange
-        Stream stream = CreateFile().OpenReadStream();
-        IList<string> dataStrings = new List<string>
-        {
-            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
-            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
-        };
-
-        IList<string[]> dataRecord = new List<string[]>
-        {
-            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
-            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
-        };
-
-        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecord.Skip(1));
-
-        IList<GameResult> gameResults = new List<GameResult>
-        {
-            new() { Id = 1 },
-            new() { Id = 2 }
-        };
-
-        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
-        this.dataStringValidator.Validate(dataStrings);
-        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
-        this.dataRecordValidator.Validate(dataRecord);
-        this.mapper.MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(dataRecordsWithoutHeader)))
-            .Returns(gameResults);
+        this.streamToStringConverter.Convert(this.stream).Returns(this.dataStrings);
+        this.dataStringValidator.Validate(this.dataStrings);
+        this.stringToDataRecordConverter.Convert(this.dataStrings).Returns(this.dataRecords);
+        this.dataRecordValidator.Validate(this.dataRecords);
+        this.stringToGameResultMapper
+            .MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(this.dataRecordsWithoutHeader)))
+            .Returns(this.gameResults);
         //Act
-        this.importService.ImportGameResults(stream);
+        this.importService.ImportGameResults(this.stream);
         //Assert
-        this.checker.Received().CheckDuplicates(gameResults);
+        this.duplicatesChecker.Received().CheckDuplicates(this.gameResults);
     }
 
     [TestMethod]
     public void ImportGameResult_Call_GameResultValidator_Validate()
     {
         //Arrange
-        Stream stream = CreateFile().OpenReadStream();
-        IList<string> dataStrings = new List<string>
-        {
-            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
-            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
-        };
-
-        IList<string[]> dataRecord = new List<string[]>
-        {
-            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
-            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
-        };
-
-        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecord.Skip(1));
-
-        IList<GameResult> gameResults = new List<GameResult>
-        {
-            new() { Id = 1 },
-            new() { Id = 2 }
-        };
-
-        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
-        this.dataStringValidator.Validate(dataStrings);
-        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
-        this.dataRecordValidator.Validate(dataRecord);
-        this.mapper.MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(dataRecordsWithoutHeader)))
-            .Returns(gameResults);
-        this.checker.CheckDuplicates(gameResults);
+        this.streamToStringConverter.Convert(this.stream).Returns(this.dataStrings);
+        this.dataStringValidator.Validate(this.dataStrings);
+        this.stringToDataRecordConverter.Convert(this.dataStrings).Returns(this.dataRecords);
+        this.dataRecordValidator.Validate(this.dataRecords);
+        this.stringToGameResultMapper
+            .MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(this.dataRecordsWithoutHeader)))
+            .Returns(this.gameResults);
+        this.duplicatesChecker.CheckDuplicates(this.gameResults);
         //Act
-        this.importService.ImportGameResults(stream);
+        this.importService.ImportGameResults(this.stream);
         //Assert
-        this.validator.Received().Validate(gameResults);
+        this.gameResultValidator.Received().Validate(this.gameResults);
     }
 
     [TestMethod]
     public void ImportGameResult_Call_GameResultRepository_InsertAllGameResults()
     {
         //Arrange
-        Stream stream = CreateFile().OpenReadStream();
-        IList<string> dataStrings = new List<string>
-        {
-            "Spiel;Tag;Team 1;Team 2;T1 MP;T2 MP",
-            "1;1;Virst Factory Lódz;Ballistics Göttingen;4;5"
-        };
-
-        IList<string[]> dataRecord = new List<string[]>
-        {
-            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
-            new[] { "1", "1", "Virst Factory Lódz", "Ballistics Göttingen", "4", "5" }
-        };
-
-        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecord.Skip(1));
-
-        IList<GameResult> gameResults = new List<GameResult>
-        {
-            new() { Id = 1 },
-            new() { Id = 2 }
-        };
-
-        this.streamToStringConverter.Convert(stream).Returns(dataStrings);
-        this.dataStringValidator.Validate(dataStrings);
-        this.stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecord);
-        this.dataRecordValidator.Validate(dataRecord);
-        this.mapper.MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(dataRecordsWithoutHeader)))
-            .Returns(gameResults);
-        this.checker.CheckDuplicates(gameResults);
-        this.validator.Validate(gameResults);
+        this.streamToStringConverter.Convert(this.stream).Returns(this.dataStrings);
+        this.dataStringValidator.Validate(this.dataStrings);
+        this.stringToDataRecordConverter.Convert(this.dataStrings).Returns(this.dataRecords);
+        this.dataRecordValidator.Validate(this.dataRecords);
+        this.stringToGameResultMapper
+            .MapGameResult(Arg.Is<List<string[]>>(x => x.SequenceEqual(this.dataRecordsWithoutHeader)))
+            .Returns(this.gameResults);
+        this.duplicatesChecker.CheckDuplicates(this.gameResults);
+        this.gameResultValidator.Validate(this.gameResults);
         //Act
-        this.importService.ImportGameResults(stream);
+        this.importService.ImportGameResults(this.stream);
         //Assert
-        this.repository.Received().InsertAllGameResults(gameResults);
+        this.gameResultRepository.Received().InsertAllGameResults(this.gameResults);
     }
 
     private static IFormFile CreateFile()

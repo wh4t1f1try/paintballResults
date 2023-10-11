@@ -11,7 +11,7 @@ public class StreamToStringConverter : IStreamToStringConverter
     {
         IList<string> dataRecords = new List<string>();
 
-        if (this.IsInvalid(stream))
+        if (IsInvalid(stream))
         {
             throw new StreamIsNullOrEmptyException(ExceptionMessages.StreamIsNullOrEmpty);
         }
@@ -29,7 +29,7 @@ public class StreamToStringConverter : IStreamToStringConverter
         return dataRecords;
     }
 
-    private bool IsInvalid(Stream? stream)
+    private static bool IsInvalid(Stream? stream)
     {
         return stream == null || stream.Length <= 0;
     }

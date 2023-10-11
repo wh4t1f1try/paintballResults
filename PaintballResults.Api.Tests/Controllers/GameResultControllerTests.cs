@@ -1,4 +1,5 @@
-﻿namespace PaintballResults.Api.Tests.Controllers;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+namespace PaintballResults.Api.Tests.Controllers;
 
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -11,15 +12,15 @@ using PaintballResults.Api.Controllers;
 [TestClass]
 public class GameResultControllerTests
 {
-    private GameResultController _controller;
-    private IGameResultService _gameResultService;
+    private GameResultController controller;
+    private IGameResultService gameResultService;
 
 
     [TestInitialize]
     public void Setup()
     {
-        this._gameResultService = Substitute.For<IGameResultService>();
-        this._controller = new GameResultController(this._gameResultService);
+        this.gameResultService = Substitute.For<IGameResultService>();
+        this.controller = new GameResultController(this.gameResultService);
     }
 
     [TestMethod]
@@ -31,11 +32,9 @@ public class GameResultControllerTests
             new(),
             new()
         };
-        this._gameResultService.GetAll().Returns(gameResults);
-
+        this.gameResultService.GetAll().Returns(gameResults);
         //Act
-        IActionResult result = await this._controller.GetAllGameResults();
-
+        IActionResult result = await this.controller.GetAllGameResults();
         //Assert
         OkObjectResult? okObjectResult = result as OkObjectResult;
         okObjectResult!.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -43,15 +42,13 @@ public class GameResultControllerTests
     }
 
     [TestMethod]
-    public async Task GetAllGameResulst_ShouldReturnOkObjectResultWith200_WhenNoGameResultsExist()
+    public async Task GetAllGameResult_ShouldReturnOkObjectResultWith200_WhenNoGameResultsExist()
     {
         //Arrange
         IList<GameResultDto> gameResults = new List<GameResultDto>();
-        this._gameResultService.GetAll().Returns(gameResults);
-
+        this.gameResultService.GetAll().Returns(gameResults);
         //Act
-        IActionResult result = await this._controller.GetAllGameResults();
-
+        IActionResult result = await this.controller.GetAllGameResults();
         //Assert
         OkObjectResult? okObjectResult = result as OkObjectResult;
         okObjectResult!.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -73,11 +70,9 @@ public class GameResultControllerTests
             TeamTwoMatchPoints = 4
         };
 
-        this._gameResultService.GetById(validId).Returns(gameResult);
-
+        this.gameResultService.GetById(validId).Returns(gameResult);
         // Act
-        ObjectResult? result = await this._controller.GetGameResultsById(validId) as ObjectResult;
-
+        ObjectResult? result = await this.controller.GetGameResultsById(validId) as ObjectResult;
         // Assert
         result.Value.Should().BeEquivalentTo(gameResult);
         result.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -101,9 +96,9 @@ public class GameResultControllerTests
                 TeamTwoMatchPoints = 40
             }
         };
-        this._gameResultService.GetByName(team).Returns(gameResults);
+        this.gameResultService.GetByName(team).Returns(gameResults);
         // Act
-        IActionResult result = await this._controller.GetAllResultsFromTeam(team);
+        IActionResult result = await this.controller.GetAllResultsFromTeam(team);
         // Assert
         OkObjectResult? okResult = result.Should().BeOfType<OkObjectResult>().Subject;
         IList<GameResultDto>? returnedGameResults =

@@ -9,7 +9,7 @@ public class CsvDataStringValidator : ICsvDataStringValidator
 {
     private const int ValidDataStringLength = 11;
 
-    private static readonly char[] Delimiters = { ',', ';' };
+    private static readonly char[] delimiters = { ',', ';' };
 
     public void Validate(IList<string> dataStrings)
     {
@@ -30,6 +30,6 @@ public class CsvDataStringValidator : ICsvDataStringValidator
 
     private static bool ContainsDelimiters(string input)
     {
-        return input.Any(c => Delimiters.Contains(c));
+        return input.Any(c => delimiters.Contains(c));
     }
 }

@@ -68,11 +68,8 @@
             //Arrange
             this._context.GameResults.AddRange(this._gameResults);
             this._context.SaveChanges();
-
             //Act
             IList<GameResult> results = this._repository.GetAllGameResults();
-
-
             //Assert
             results.Should().BeEquivalentTo(this._gameResults);
             results.Should().HaveCount(this._gameResults.Count);
@@ -88,10 +85,8 @@
             int id = 1;
             this._context.GameResults.AddRange(this._gameResults);
             this._context.SaveChanges();
-
             //Act
             GameResult result = this._repository.GetGameResultById(id);
-
             //Assert
             result.Id.Should().Be(id);
         }
@@ -104,10 +99,8 @@
             string teamName = "Braindead Emsdetten";
             this._context.GameResults.AddRange(this._gameResults);
             this._context.SaveChanges();
-
             //Act
             IList<GameResult> result = this._repository.GetAllGameResultsByTeamName(teamName);
-
             //Assert
             result.Should().HaveCount(3);
             result.First().TeamOne.Should().Be(teamName);
@@ -121,10 +114,8 @@
             IList<GameResult> gameResults = new List<GameResult>();
             this._context.GameResults.AddRange(gameResults);
             this._context.SaveChanges();
-
             //Act
             Action action = () => this._repository.InsertAllGameResults(gameResults);
-
             //Assert
             action.Should().NotThrow();
         }
@@ -147,7 +138,6 @@
             };
             this._context.GameResults.AddRange(initialData);
             this._context.SaveChanges();
-
             // Arrange
             List<GameResult> updatedData = new List<GameResult>
             {
@@ -161,10 +151,8 @@
                     TeamTwoMatchPoints = 2
                 }
             };
-
             // Act
             this._repository.InsertAllGameResults(updatedData);
-
             // Assert
             GameResult result = this._context.GameResults.FirstOrDefault(r => r.Id == 1)!;
 
@@ -193,10 +181,8 @@
             };
             this._context.GameResults.AddRange(initialData);
             this._context.SaveChanges();
-
             // Act: Insert empty list
             this._repository.InsertAllGameResults(new List<GameResult>());
-
             // Assert
             IList<GameResult> results = this._repository.GetAllGameResults();
             Assert.AreEqual(0, results.Count);

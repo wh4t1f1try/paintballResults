@@ -18,11 +18,11 @@ namespace PaintballResults.Api.Middleware
             }
             catch (Exception e)
             {
-                await this.HandleExceptionAsync(context, e);
+                await HandleExceptionAsync(context, e);
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, Exception e)
+        private static async Task HandleExceptionAsync(HttpContext context, Exception e)
         {
             ErrorCodes errorCodes;
             string message;

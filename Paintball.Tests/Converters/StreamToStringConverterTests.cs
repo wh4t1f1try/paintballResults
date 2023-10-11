@@ -20,12 +20,9 @@ public class StreamToStringConverterTests
     public void Convert_WhenStreamIsValid_Return_ListOfDataStrings(string content)
     {
         //Arrange
-
         MemoryStream stream = new(Encoding.UTF7.GetBytes(content));
-
         //Act
         IList<string> result = this.Converter.Convert(stream);
-
         //Assert
         result.Should().BeEquivalentTo(content);
         stream.Close();
@@ -36,10 +33,8 @@ public class StreamToStringConverterTests
     {
         // Arrange
         Stream? stream = null;
-
         // Act
         Action action = () => this.Converter.Convert(stream);
-
         // Assert
         action.Should().Throw<StreamIsNullOrEmptyException>();
     }
@@ -49,10 +44,8 @@ public class StreamToStringConverterTests
     {
         //Arrange
         MemoryStream stream = new MemoryStream();
-
         //Act
         Action action = () => this.Converter.Convert(stream);
-
         //Assert
         action.Should().Throw<StreamIsNullOrEmptyException>();
         stream.Close();

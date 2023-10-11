@@ -18,7 +18,7 @@ public sealed class GameResultValidator : IGameResultValidator
 
     public void Validate(GameResult result)
     {
-        if (!this.IsValidId(result.Id))
+        if (!IsValidId(result.Id))
         {
             throw new InvalidGameResultException(ExceptionMessages.IdIsNotValid);
         }
@@ -38,12 +38,12 @@ public sealed class GameResultValidator : IGameResultValidator
             throw new InvalidGameResultException(ExceptionMessages.TeamNotValid);
         }
 
-        if (!this.IsValidTeamMatchPoints(result.TeamOneMatchPoints))
+        if (!IsValidTeamMatchPoints(result.TeamOneMatchPoints))
         {
             throw new InvalidGameResultException(ExceptionMessages.MatchPointsNotValid);
         }
 
-        if (!this.IsValidTeamMatchPoints(result.TeamTwoMatchPoints))
+        if (!IsValidTeamMatchPoints(result.TeamTwoMatchPoints))
         {
             throw new InvalidGameResultException(ExceptionMessages.MatchPointsNotValid);
         }
@@ -57,7 +57,7 @@ public sealed class GameResultValidator : IGameResultValidator
         }
     }
 
-    private bool IsValidId(int id)
+    private static bool IsValidId(int id)
     {
         return id >= 1;
     }
@@ -69,7 +69,7 @@ public sealed class GameResultValidator : IGameResultValidator
     }
 
 
-    private bool IsValidTeamMatchPoints(int matchPoints)
+    private static bool IsValidTeamMatchPoints(int matchPoints)
     {
         return matchPoints >= MinMatchPoints && matchPoints <= MaxMatchPoints;
     }
