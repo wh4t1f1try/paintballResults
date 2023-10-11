@@ -10,6 +10,11 @@
         {
         }
 
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlite("Data Source=mydatabase.db");
+        //}
+
         public DbSet<GameResult> GameResults => this.Set<GameResult>();
     }
 }

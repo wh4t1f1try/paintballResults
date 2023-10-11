@@ -33,7 +33,6 @@ builder.Services.AddDbContext<GameResultContext>(
     options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options =>
 {
