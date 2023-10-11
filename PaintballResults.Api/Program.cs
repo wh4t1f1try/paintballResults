@@ -28,6 +28,7 @@ builder.Services.AddScoped<IGameResultRepository, GameResultRepository>();
 builder.Services.AddScoped<IGameResultValidator, GameResultValidator>();
 builder.Services.AddScoped<IStringToDataRecordConverter, StringToDataRecordConverter>();
 builder.Services.AddScoped<IDataRecordValidator, DataRecordValidator>();
+builder.Services.AddScoped<IGameResultMapper, GameResultMapper>();
 builder.Services.AddDbContext<GameResultContext>(
     options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));

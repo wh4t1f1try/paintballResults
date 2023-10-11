@@ -30,7 +30,7 @@ public class StringToGameResultMapperTests
         // Assert
         gameResult.Should().NotBeNull();
         gameResult.Id.Should().Be(1);
-        gameResult.Gameday.Should().Be(1);
+        gameResult.GameDay.Should().Be(1);
         gameResult.TeamOne.Should().Be("Wanderers Bremen");
         gameResult.TeamTwo.Should().Be("Lucky Bastards");
         gameResult.TeamOneMatchPoints.Should().Be(1);
@@ -59,7 +59,7 @@ public class StringToGameResultMapperTests
 
         gameResults[0].Id.Should().Be(1);
         gameResults[0].Id.Should().Be(1);
-        gameResults[0].Gameday.Should().Be(1);
+        gameResults[0].GameDay.Should().Be(1);
         gameResults[0].TeamOne.Should().Be("Wanderers Bremen");
         gameResults[0].TeamTwo.Should().Be("Lucky Bastards");
         gameResults[0].TeamOneMatchPoints.Should().Be(1);

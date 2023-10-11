@@ -75,7 +75,7 @@ public class GameResultValidatorTests
     {
         //Arrange
         GameResult gameResult = this.CreateValidGameResult();
-        gameResult.Gameday = gameDay;
+        gameResult.GameDay = gameDay;
 
         //Action
         Action action = () => { this.Validator.Validate(gameResult); };
@@ -93,7 +93,7 @@ public class GameResultValidatorTests
     {
         //Arrange
         GameResult gameResult = this.CreateValidGameResult();
-        gameResult.Gameday = gameDay;
+        gameResult.GameDay = gameDay;
 
         //Act
         Action action = () => { this.Validator.Validate(gameResult); };
@@ -265,7 +265,7 @@ public class GameResultValidatorTests
         GameResult gameResult = new GameResult
         {
             Id = 1,
-            Gameday = 1,
+            GameDay = 1,
             TeamOne = "validTeamOne",
             TeamTwo = string.Empty,
             TeamOneMatchPoints = 5,
@@ -285,7 +285,7 @@ public class GameResultValidatorTests
         GameResult gameResult = new GameResult
         {
             Id = 1,
-            Gameday = 1,
+            GameDay = 1,
             TeamOne = "validTeamOne",
             TeamTwo = "validTeamTwo",
             TeamOneMatchPoints = 5,
@@ -303,7 +303,7 @@ public class GameResultValidatorTests
         GameResult result = new()
         {
             Id = 1,
-            Gameday = 1,
+            GameDay = 1,
             TeamOne = "Lucky Bastards",
             TeamTwo = "Nordic Skullz",
             TeamOneMatchPoints = 0,
@@ -325,7 +325,7 @@ public class GameResultValidatorTests
 
         //Assert
         gameResult.Id.Should().Be(1);
-        gameResult.Gameday.Should().Be(1);
+        gameResult.GameDay.Should().Be(1);
         gameResult.TeamOne.Should().Be("Lucky Bastards");
         gameResult.TeamTwo.Should().Be("Nordic Skullz");
         gameResult.TeamOneMatchPoints.Should().Be(0);

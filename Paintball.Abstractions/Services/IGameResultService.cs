@@ -1,13 +1,13 @@
 ﻿namespace Paintball.Abstractions.Services
 {
-    using Paintball.Database.Abstractions.Entities;
+    using Paintball.Abstractions.DTOs;
 
     public interface IGameResultService
     {
-        IList<GameResult> GetAll();
+        IList<GameResultDto> GetAll();
 
-        GameResult GetById(int id);
+        GameResultDto GetById(int id);
 
-        IList<GameResult> GetByName(string teamName);
+        IList<GameResultDto> GetByName(string teamName);
     }
 }

@@ -3,7 +3,9 @@
     using FluentAssertions;
     using NSubstitute;
     using Paintball.Abstractions.Constants;
+    using Paintball.Abstractions.DTOs;
     using Paintball.Abstractions.Exceptions;
+    using Paintball.Abstractions.Mappers;
     using Paintball.Database.Abstractions.Entities;
     using Paintball.Database.Abstractions.Repositories;
     using Paintball.Services;
@@ -15,8 +17,10 @@
         public void Setup()
         {
             this.GameResultRepository = Substitute.For<IGameResultRepository>();
-            this.GameResultService = new GameResultService(this.GameResultRepository);
+            this.GameResultMapper = Substitute.For<IGameResultMapper>();
+            this.GameResultService = new GameResultService(this.GameResultRepository, this.GameResultMapper);
         }
+
 
         [TestMethod]
         public void GetAll_TwoItemsInRepo_ReturnsCollectionOfGameResults_NotThrowsException()
@@ -27,9 +31,16 @@
                 new()
             };
 
-            this.GameResultRepository.GetAllGameResults().Returns(gameResults);
+            IList<GameResultDto> gameResultDtos = new List<GameResultDto>
+            {
+                new(),
+                new()
+            };
 
-            IList<GameResult> result = this.GameResultService.GetAll();
+            this.GameResultRepository.GetAllGameResults().Returns(gameResults);
+            this.GameResultMapper.Map(gameResults).Returns(gameResultDtos);
+
+            IList<GameResultDto> result = this.GameResultService.GetAll();
 
             result.Count().Should().Be(2);
             this.GameResultService.Invoking(service => service.GetAll())
@@ -48,16 +59,19 @@
         }
 
         [TestMethod]
-        public void GetById_WhenGameResultExists_ReturnsGameResult()
+        public void GetById_WhenGameResultExists_ReturnsGameResultDto()
         {
             int gameId = 1;
             GameResult expectedGameResult = new GameResult { Id = gameId };
             this.GameResultRepository.GetGameResultById(gameId).Returns(expectedGameResult);
 
-            GameResult result = this.GameResultService.GetById(gameId);
+            GameResultDto dto = new GameResultDto { Id = gameId };
+            this.GameResultMapper.Map(expectedGameResult).Returns(dto);
+
+            GameResultDto result = this.GameResultService.GetById(gameId);
 
             result.Should().NotBeNull();
-            result.Should().Be(expectedGameResult);
+            result.Should().BeEquivalentTo(expectedGameResult);
         }
 
         [TestMethod]
@@ -72,23 +86,31 @@
         }
 
         [TestMethod]
-        public void GetByName_WhenGameResultExist_ReturnsGameResult()
+        public void GetByName_WhenGameResultExist_ReturnsGameResultDto()
         {
             string teamOne = "Lucky Bastards";
-
             GameResult expectedGameResult = new GameResult { TeamOne = teamOne };
-            IList<GameResult> gameResults = new List<GameResult>
+            IList<GameResult> expectedGameResults = new List<GameResult>
             {
                 expectedGameResult
             };
 
-            this.GameResultRepository.GetAllGameResultsByTeamName(teamOne).Returns(gameResults);
+            this.GameResultRepository.GetAllGameResultsByTeamName(teamOne).Returns(expectedGameResults);
 
-            IList<GameResult> result = this.GameResultService.GetByName(teamOne);
+            IList<GameResultDto> gameResultDtos = new List<GameResultDto>
+            {
+                new GameResultDto
+                {
+                    TeamOne = teamOne,
+                }
+            };
+
+            this.GameResultMapper.Map(expectedGameResults).Returns(gameResultDtos);
+
+            IList<GameResultDto> result = this.GameResultService.GetByName(teamOne);
 
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<IList<GameResult>>();
-            result.Should().ContainSingle().Which.Should().Be(expectedGameResult);
+            result.Should().BeEquivalentTo(expectedGameResults);
         }
 
         [TestMethod]
@@ -99,11 +121,12 @@
             this.GameResultRepository.GetAllGameResultsByTeamName(teamName).Returns(new List<GameResult>());
 
             this.GameResultService.Invoking(service => service.GetByName(teamName))
-                .Should().Throw<GameResultNotFoundException>()
-                .WithMessage(ExceptionMessages.GameResultNotFound);
+                .Should().Throw<GameResultsForSpecificTeamNotFoundException>()
+                .WithMessage(ExceptionMessages.GameResultForTeamNotFound);
         }
 
         private GameResultService GameResultService { get; set; } = null!;
         private IGameResultRepository GameResultRepository { get; set; } = null!;
+        public IGameResultMapper GameResultMapper { get; set; } = null !;
     }
 }

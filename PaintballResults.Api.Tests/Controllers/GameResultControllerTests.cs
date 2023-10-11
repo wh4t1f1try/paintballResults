@@ -4,8 +4,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
+using Paintball.Abstractions.DTOs;
 using Paintball.Abstractions.Services;
-using Paintball.Database.Abstractions.Entities;
 using PaintballResults.Api.Controllers;
 
 [TestClass]
@@ -26,7 +26,7 @@ public class GameResultControllerTests
     public async Task GetAllGameResults_ShouldReturnOk_WhenGameResultsExist()
     {
         //Arrange
-        IList<GameResult> gameResults = new List<GameResult>
+        IList<GameResultDto> gameResults = new List<GameResultDto>
         {
             new(),
             new()
@@ -46,7 +46,7 @@ public class GameResultControllerTests
     public async Task GetAllGameResulst_ShouldReturnOkObjectResultWith200_WhenNoGameResultsExist()
     {
         //Arrange
-        IList<GameResult> gameResults = new List<GameResult>();
+        IList<GameResultDto> gameResults = new List<GameResultDto>();
         this._gameResultService.GetAll().Returns(gameResults);
 
         //Act
@@ -63,10 +63,10 @@ public class GameResultControllerTests
     {
         //Arrange
         int validId = 1;
-        GameResult gameResult = new GameResult
+        GameResultDto gameResult = new GameResultDto
         {
             Id = 1,
-            Gameday = 1,
+            GameDay = 1,
             TeamOne = "Team One",
             TeamTwo = "Team Two",
             TeamOneMatchPoints = 1,
@@ -81,5 +81,33 @@ public class GameResultControllerTests
         // Assert
         result.Value.Should().BeEquivalentTo(gameResult);
         result.StatusCode.Should().Be(StatusCodes.Status200OK);
+    }
+
+    [TestMethod]
+    public async Task GetAllResultsFromTeam_ShouldReturnOkResult_WithCorrectGameResults()
+    {
+        // Arrange
+        string team = "TeamOne";
+        List<GameResultDto> gameResults = new List<GameResultDto>
+        {
+            new GameResultDto
+            {
+                Id = 1, GameDay = 1, TeamOne = team, TeamTwo = "TeamTwo1", TeamOneMatchPoints = 10,
+                TeamTwoMatchPoints = 20
+            },
+            new GameResultDto
+            {
+                Id = 2, GameDay = 2, TeamOne = team, TeamTwo = "TeamTwo2", TeamOneMatchPoints = 30,
+                TeamTwoMatchPoints = 40
+            }
+        };
+        this._gameResultService.GetByName(team).Returns(gameResults);
+        // Act
+        IActionResult result = await this._controller.GetAllResultsFromTeam(team);
+        // Assert
+        OkObjectResult? okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+        IList<GameResultDto>? returnedGameResults =
+            okResult.Value.Should().BeAssignableTo<IList<GameResultDto>>().Subject;
+        returnedGameResults.Should().BeEquivalentTo(gameResults);
     }
 }

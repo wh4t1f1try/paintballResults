@@ -12,7 +12,7 @@
 
         public const string IdIsNotValid = "Id is not valid.";
 
-        public const string GameDayIsNotValid = "Gameday is not valid.";
+        public const string GameDayIsNotValid = "GameDay is not valid.";
 
         public const string TeamNotValid = "Team is not valid.";
 
@@ -29,5 +29,7 @@
         public const string InvalidDataString = "Datastring is null or empty.";
 
         public const string NoDelimitersFound = "Datastring contains no Delimiters.";
+
+        public const string GameResultForTeamNotFound = "No Gameresults for this Team.";
     }
 }

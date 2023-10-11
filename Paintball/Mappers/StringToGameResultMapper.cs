@@ -25,7 +25,7 @@
             GameResult gameResult = new()
             {
                 Id = this.ParseStringToExpectedValue(dataRecord[0]),
-                Gameday = this.ParseStringToExpectedValue(dataRecord[1]),
+                GameDay = this.ParseStringToExpectedValue(dataRecord[1]),
                 TeamOne = dataRecord[2],
                 TeamTwo = dataRecord[3],
                 TeamOneMatchPoints = this.ParseStringToExpectedValue(dataRecord[4]),

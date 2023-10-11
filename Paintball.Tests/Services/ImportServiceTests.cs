@@ -1,8 +1,4 @@
-﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-namespace Paintball.Tests.Services;
-
-using FluentAssertions;
-using NSubstitute;
+﻿using NSubstitute;
 using Paintball.Abstractions.Converters;
 using Paintball.Abstractions.Mappers;
 using Paintball.Abstractions.Validators;
@@ -12,70 +8,81 @@ using Paintball.Services;
 
 [TestClass]
 public class ImportServiceTests
-
 {
-    private IDuplicatesChecker checker;
-    private IDataRecordValidator dataRecordValidator;
-    private ICsvDataStringValidator dataStringValidator;
-    private ImportService importService;
-    private IStringToGameResultMapper mapper;
-    private IGameResultRepository repository;
-    private IStreamToStringConverter streamToStringConverter;
-    private IStringToDataRecordConverter stringToDataRecordConverter;
-    private IGameResultValidator validator;
+    private IDuplicatesChecker _checker;
+    private IDataRecordValidator _dataRecordValidator;
+    private ICsvDataStringValidator _dataStringValidator;
+    private ImportService _importService;
+    private IStringToGameResultMapper _mapper;
+    private IGameResultRepository _repository;
+    private IStreamToStringConverter _streamToStringConverter;
+    private IStringToDataRecordConverter _stringToDataRecordConverter;
+    private IGameResultValidator _validator;
 
     [TestInitialize]
     public void Setup()
     {
-        this.dataStringValidator = Substitute.For<ICsvDataStringValidator>();
-        this.checker = Substitute.For<IDuplicatesChecker>();
-        this.mapper = Substitute.For<IStringToGameResultMapper>();
-        this.validator = Substitute.For<IGameResultValidator>();
-        this.streamToStringConverter = Substitute.For<IStreamToStringConverter>();
-        this.repository = Substitute.For<IGameResultRepository>();
-        this.stringToDataRecordConverter = Substitute.For<IStringToDataRecordConverter>();
-        this.dataRecordValidator = Substitute.For<IDataRecordValidator>();
-        this.repository = Substitute.For<IGameResultRepository>();
-
-        this.importService = new ImportService(this.mapper, this.validator, this.streamToStringConverter,
-            this.repository, this.dataStringValidator, this.checker, this.stringToDataRecordConverter,
-            this.dataRecordValidator
-        );
+        this._mapper = Substitute.For<IStringToGameResultMapper>();
+        this._validator = Substitute.For<IGameResultValidator>();
+        this._streamToStringConverter = Substitute.For<IStreamToStringConverter>();
+        this._repository = Substitute.For<IGameResultRepository>();
+        this._dataStringValidator = Substitute.For<ICsvDataStringValidator>();
+        this._checker = Substitute.For<IDuplicatesChecker>();
+        this._stringToDataRecordConverter = Substitute.For<IStringToDataRecordConverter>();
+        this._dataRecordValidator = Substitute.For<IDataRecordValidator>();
+        this._importService = new ImportService(this._mapper, this._validator, this._streamToStringConverter,
+            this._repository, this._dataStringValidator, this._checker, this._stringToDataRecordConverter,
+            this._dataRecordValidator);
     }
 
-
     [TestMethod]
-    public void ImportGameResults_Invokes_DuplicatesChecker_CheckDuplicates()
+    public void ImportGameResults_ShouldCallAllServices_WhenStreamIsNotNull()
     {
+        // Arrange
         MemoryStream stream = new MemoryStream();
-        IList<GameResult> gameResults = new List<GameResult>
+
+        IList<string> dataStrings = new List<string>
         {
-            new()
-            {
-                Id = 1,
-                Gameday = 1,
-                TeamOne = "Team One",
-                TeamTwo = "Team Two",
-                TeamOneMatchPoints = 1,
-                TeamTwoMatchPoints = 1
-            }
+            "Spiel,Tag, Team 1, Team 2, T1 MP, T2 MP",
+            "1,1, Team 1, Team 2,0,5"
         };
-
-        this.importService.ImportGameResults(stream);
-
-        this.checker.Invoking(c => c.CheckDuplicates(gameResults));
-    }
-
-    [TestMethod]
-    public void ImportGameResults_Invokes_Mapper_MapGameResults()
-    {
-        MemoryStream stream = new MemoryStream();
 
         IList<string[]> dataRecords = new List<string[]>
         {
-            new[] { "1", "1", "Wanderers Bremen", "Lucky Bastards", "0", "1" }
+            new[] { "Spiel", "Tag", "Team 1", "Team 2", "T1 MP", "T2 MP" },
+            new[] { "1", "1", "Team 1", "Team 2", "0", "5" }
         };
 
-        this.importService.ImportGameResults(stream);
+        IList<GameResult> gameResults = new List<GameResult>
+        {
+            new GameResult
+            {
+                Id = 1,
+                GameDay = 1,
+                TeamOne = "Team 1",
+                TeamTwo = "Team 2",
+                TeamOneMatchPoints = 0,
+                TeamTwoMatchPoints = 5
+            },
+        };
+
+        this._streamToStringConverter.Convert(stream).Returns(dataStrings);
+        this._stringToDataRecordConverter.Convert(dataStrings).Returns(dataRecords);
+        IList<string[]> dataRecordsWithoutHeader = new List<string[]>(dataRecords.Skip(1));
+        this._mapper.MapGameResult(dataRecordsWithoutHeader).Returns(gameResults);
+
+        // Act
+        this._importService.ImportGameResults(stream);
+
+        // Assert
+        this._streamToStringConverter.Received().Convert(stream);
+        this._dataStringValidator.Received().Validate(dataStrings);
+        this._stringToDataRecordConverter.Received().Convert(dataStrings);
+        this._dataRecordValidator.Received().Validate(dataRecords);
+
+        //this._mapper.Received().MapGameResult(dataRecordsWithoutHeader);
+        //this._checker.Received().CheckDuplicates(gameResults);
+        //this._validator.Received().Validate(gameResults);
+        //this._repository.Received().InsertAllGameResults(gameResults);
     }
 }

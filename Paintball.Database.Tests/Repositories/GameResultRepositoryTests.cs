@@ -27,7 +27,7 @@
                 new()
                 {
                     Id = 1,
-                    Gameday = 1,
+                    GameDay = 1,
                     TeamOne = "Braindead Emsdetten",
                     TeamTwo = "Lucky Bastards",
                     TeamOneMatchPoints = 2,
@@ -37,7 +37,7 @@
                 new()
                 {
                     Id = 2,
-                    Gameday = 1,
+                    GameDay = 1,
                     TeamOne = "Braindead Emsdetten",
                     TeamTwo = "Breakout Spa",
                     TeamOneMatchPoints = 2,
@@ -47,7 +47,7 @@
                 new()
                 {
                     Id = 3,
-                    Gameday = 1,
+                    GameDay = 1,
                     TeamOne = "Braindead Emsdetten",
                     TeamTwo = "Cologne Predators",
                     TeamOneMatchPoints = 0,
@@ -138,7 +138,7 @@
                 new()
                 {
                     Id = 1,
-                    Gameday = 1,
+                    GameDay = 1,
                     TeamOne = "Braindead Emsdetten",
                     TeamTwo = "Lucky Bastards",
                     TeamOneMatchPoints = 2,
@@ -154,7 +154,7 @@
                 new()
                 {
                     Id = 1,
-                    Gameday = 2,
+                    GameDay = 2,
                     TeamOne = "Wanderers Bremen",
                     TeamTwo = "Cologne Predators",
                     TeamOneMatchPoints = 3,
@@ -168,7 +168,7 @@
             // Assert
             GameResult result = this._context.GameResults.FirstOrDefault(r => r.Id == 1)!;
 
-            result.Gameday.Should().Be(2);
+            result.GameDay.Should().Be(2);
             result.TeamOne.Should().Be("Wanderers Bremen");
             result.TeamTwo.Should().Be("Cologne Predators");
             result.TeamOneMatchPoints.Should().Be(3);
@@ -184,7 +184,7 @@
                 new()
                 {
                     Id = 1,
-                    Gameday = 1,
+                    GameDay = 1,
                     TeamOne = "Team A",
                     TeamTwo = "Team B",
                     TeamOneMatchPoints = 2,

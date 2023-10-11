@@ -23,7 +23,7 @@ public sealed class GameResultValidator : IGameResultValidator
             throw new InvalidGameResultException(ExceptionMessages.IdIsNotValid);
         }
 
-        if (!this.IsValidGameday(result.Gameday))
+        if (!this.IsValidGameday(result.GameDay))
         {
             throw new InvalidGameResultException(ExceptionMessages.GameDayIsNotValid);
         }

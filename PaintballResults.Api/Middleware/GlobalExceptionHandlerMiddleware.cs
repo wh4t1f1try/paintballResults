@@ -68,12 +68,6 @@ namespace PaintballResults.Api.Middleware
                 errorCodes = ErrorCodes.GameResultNotFound;
                 statusCode = StatusCodes.Status404NotFound;
             }
-            else if (exceptionType == typeof(FileHasNoDataException))
-            {
-                message = e.Message;
-                errorCodes = ErrorCodes.InvalidRecordFormat;
-                statusCode = StatusCodes.Status404NotFound;
-            }
             else if (exceptionType == typeof(StreamIsNullOrEmptyException))
             {
                 message = e.Message;
