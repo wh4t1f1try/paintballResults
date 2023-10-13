@@ -23,6 +23,20 @@ namespace PaintballResults.Api.Controllers
             return this.Ok(gameResults);
         }
 
+        //[HttpGet("all")]
+        //public IList<GameResultDto> GetAllGameResults2()
+        //{
+        //    IList<GameResultDto> gameResults = this.GameResultService.GetAll();
+        //    return gameResults;
+        //}
+
+        //[HttpGet("id/{id}")]
+        //public GameResultDto GetGameResultsById2([FromRoute] int id)
+        //{
+        //    GameResultDto gameResult = this.GameResultService.GetById(id);
+        //    return gameResult;
+        //}
+
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetGameResultsById([FromRoute] int id)
         {
@@ -36,6 +50,13 @@ namespace PaintballResults.Api.Controllers
             IList<GameResultDto> gameResults = this.GameResultService.GetByName(team);
             return this.Ok(gameResults);
         }
+
+        //[HttpGet("team/{team}")]
+        //public IList<GameResultDto> GetAllResultsFromTeam2(string team)
+        //{
+        //    IList<GameResultDto> gameResults = this.GameResultService.GetByName(team);
+        //    return gameResults;
+        //}
 
         private IGameResultService GameResultService { get; }
     }

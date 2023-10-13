@@ -22,7 +22,7 @@ namespace PaintballResults.Api.Middleware
             }
         }
 
-        private static async Task HandleExceptionAsync(HttpContext context, Exception e)
+        private static Task HandleExceptionAsync(HttpContext context, Exception e)
         {
             ErrorCodes errorCodes;
             string message;
@@ -74,6 +74,12 @@ namespace PaintballResults.Api.Middleware
                 errorCodes = ErrorCodes.StreamFailure;
                 statusCode = StatusCodes.Status409Conflict;
             }
+            else if (exceptionType == typeof(GameResultsForSpecificTeamNotFoundException))
+            {
+                message = e.Message;
+                errorCodes = ErrorCodes.GameResultNotFound;
+                statusCode = StatusCodes.Status404NotFound;
+            }
             else if (exceptionType == typeof(InvalidDataStringException))
             {
                 message = e.Message;
@@ -99,7 +105,7 @@ namespace PaintballResults.Api.Middleware
 
             context.Response.StatusCode = statusCode;
 
-            await context.Response.WriteAsync(exceptionResponse);
+            return context.Response.WriteAsync(exceptionResponse);
         }
     }
 }
